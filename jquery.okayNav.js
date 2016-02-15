@@ -33,7 +33,6 @@
     }
 
     Plugin.prototype = {
-
         init: function () {
             // Some DOM manipulations
             _okayNav.setupElements($navigation);
@@ -80,7 +79,7 @@
             $document.on('click.okayNav', function(event) {
                 if (_invisibleNavState === true) {
                     var _target = $(event.target);
-                    if (!_target.parents(_options.nav_parent).length)
+                    if (!_target.parents().hasClass('okayNav'))
                         _okayNav.closeInvisibleNav();
                 }
             });
@@ -88,7 +87,6 @@
             $(window).on('load.okayNav resize.okayNav', function(event) {
                 _okayNav.recalcNav();
             });
-
         },
 
         /*
@@ -189,7 +187,6 @@
 
             // Hide the kebab icon if no items are hidden
             $('li', $nav_invisible).length == 0 ? $nav_toggle_icon.hide() : $nav_toggle_icon.show();
-
         },
 
         collapseNavItem: function() {
