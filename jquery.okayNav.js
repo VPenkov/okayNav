@@ -187,7 +187,7 @@
                width of the <nav> element and its siblings. */
 
 
-            if (visible_nav_items > 0 && nav_full_width < collapse_width)
+            if (visible_nav_items > 0 && nav_full_width <= collapse_width)
                 _okayNav.collapseNavItem();
 
             if (wrapper_width > expand_width)
