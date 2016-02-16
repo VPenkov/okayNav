@@ -55,14 +55,23 @@ var navigation = $('#nav-main').okayNav({
 
 ## Methods
 Get the nav's parent element: ``navigation.okayNav('getParent');``
+
 Get the nav's visible part: ``navigation.okayNav('getVisibleNav');``
+
 Get the nav's off-screen part: ``navigation.okayNav('getInvisibleNav');``
+
 Get the nav's toggle icon: ``navigation.okayNav('getNavToggleIcon');``
+
 Open the off-screen part: ``navigation.okayNav('openInvisibleNav');``
+
 Close the off-screen part``navigation.okayNav('closeInvisibleNav');``
+
 Toggle the off-screen part``navigation.okayNav('toggleInvisibleNav');``
+
 Get the nav children's total width: ``navigation.okayNav('getChildrenWidth');``
+
 Recalculate what should be visible and what shouldn't: ``navigation.okayNav('recalcNav');``
+
 Destroy the nav, make everything visible, disable all events: ``navigation.okayNav('destroy');``
 
 ## Roadmap
