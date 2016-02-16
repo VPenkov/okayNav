@@ -52,3 +52,9 @@ header {
 }
 
 .ok-header__logo:hover {color: #546edb}
+
+main {
+    margin-top: 7rem;
+    padding: 2%;
+    text-align: center;
+}
