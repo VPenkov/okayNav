@@ -60,10 +60,13 @@ body.okayNav-loaded {overflow-x: hidden}
 	transition: transform 400ms @nav-transition-curve;
 	position: fixed;
 	top: 0;
+	bottom: 0;
 	right: 0;
 	padding-top: @header-height;
 	transform-origin: 200px 0;
 	transform: translateX(100%);
+	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
 
 	a {
 		background: #fff;
