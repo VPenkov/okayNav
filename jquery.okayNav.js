@@ -51,7 +51,7 @@
             $nav_visible = $navigation.children('.okayNav__nav--visible');
             $nav_invisible = $navigation.children('.okayNav__nav--invisible');
             $nav_toggle_icon = $navigation.children('.' + _options.toggle_icon_class);
-            _nav_toggle_icon_width = $nav_toggle_icon.outerWidth();
+            _nav_toggle_icon_width = $nav_toggle_icon.outerWidth(true);
             _last_visible_child_width = 0; // We'll define this later
 
             // Events are up once everything is set
@@ -155,7 +155,7 @@
          */
         getParentWidth: function(el) {
             var parent = el || _options.parent;
-            var parent_width = $(parent).outerWidth();
+            var parent_width = $(parent).outerWidth(true);
 
             return parent_width;
         },
@@ -177,11 +177,11 @@
         },
 
         recalcNav: function() {
-            var wrapper_width = $(_options.parent).outerWidth();
-            var nav_full_width = $navigation.outerWidth();
+            var wrapper_width = $(_options.parent).outerWidth(true);
+            var nav_full_width = $navigation.outerWidth(true);
             var visible_nav_items = _okayNav.countNavItems($nav_visible);
 
-            var collapse_width = $nav_visible.outerWidth() + _nav_toggle_icon_width - 1;
+            var collapse_width = $nav_visible.outerWidth(true) + _nav_toggle_icon_width - 1;
             var expand_width = _okayNav.getChildrenWidth(_options.parent) + _last_visible_child_width + _nav_toggle_icon_width;
             /* _okayNav.getChildrenWidth(_options.parent) gets the total
                width of the <nav> element and its siblings. */
@@ -200,7 +200,7 @@
 
         collapseNavItem: function() {
             var $last_child = $('li:last-child', $nav_visible);
-            _last_visible_child_width = $last_child.outerWidth();
+            _last_visible_child_width = $last_child.outerWidth(true);
             $last_child.detach().prependTo($nav_invisible);
 
             // All nav items are visible by default
