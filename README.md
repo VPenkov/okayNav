@@ -37,8 +37,7 @@ okayNav depends on jQuery. Tested with jQuery 1.10+ but should work with lower v
 The stylization of okayNav comes in a commented LESS and CSS.
 
 ## Browser Support
-okayNav supports IE10+, Firefox, Chrome.
-We use a flexbox layout but you can remove this dependency by tweaking the CSS.
+okayNav supports IE9+, Firefox, Chrome. Transitions work in IE10+.
 
 ## Default options
 ```javascript
