@@ -26,6 +26,14 @@ This is the code used in the example:
     </nav>
 </header><!-- /header -->
 ```
+Include the CSS:
+```html
+<link rel="stylesheet" href="css/okayNav.css" media="screen">
+```
+Include the library:
+```html
+<script src="js/jquery.okayNav.min.js"></script>
+```
 
 And here's the JS to initialize it:
 ```javascript
