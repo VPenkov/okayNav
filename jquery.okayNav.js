@@ -13,13 +13,13 @@
     // Defaults
     var okayNav = 'okayNav',
         defaults = {
-            nav_parent : '', // will call nav's parent() by default
-            nav_toggle_icon_class : 'okayNav__menu-toggle',
-            nav_toggle_icon_content: '<span /><span /><span />',
-            nav_beforeopen : function() {}, // Will trigger before the nav gets opened
-            nav_open : function() {}, // Will trigger after the nav gets opened
-            nav_beforeclose : function() {}, // Will trigger before the nav gets closed
-            nav_close : function() {}, // Will trigger after the nav gets closed
+            parent : '', // will call nav's parent() by default
+            toggle_icon_class : 'okayNav__menu-toggle',
+            toggle_icon_content: '<span /><span /><span />',
+            beforeopen : function() {}, // Will trigger before the nav gets opened
+            open : function() {}, // Will trigger after the nav gets opened
+            beforeclose : function() {}, // Will trigger before the nav gets closed
+            close : function() {}, // Will trigger after the nav gets closed
         };
 
     // Begin
@@ -34,7 +34,7 @@
         $body = $('body'); // for controlling the overflow
         $navigation = $(element); // jQuery object
 
-        this.options.nav_parent == '' ? this.options.nav_parent = $navigation.parent() : '';
+        this.options.parent == '' ? this.options.parent = $navigation.parent() : '';
 
         // At this point, we have access to the jQuery element and the options
         // via the instance, e.g., $navigation and _options. We can access these
@@ -50,7 +50,7 @@
             // Cache new elements for further use
             $nav_visible = $navigation.children('.okayNav__nav--visible');
             $nav_invisible = $navigation.children('.okayNav__nav--invisible');
-            $nav_toggle_icon = $navigation.children('.' + _options.nav_toggle_icon_class);
+            $nav_toggle_icon = $navigation.children('.' + _options.toggle_icon_class);
             _nav_toggle_icon_width = $nav_toggle_icon.outerWidth();
             _last_visible_child_width = 0; // We'll define this later
 
@@ -73,13 +73,13 @@
             // Append elements
             $navigation
                 .append('<ul class="okayNav__nav--invisible" />')
-                .append('<a href="#" class="' + _options.nav_toggle_icon_class + '">' + _options.nav_toggle_icon_content + '</a>')
+                .append('<a href="#" class="' + _options.toggle_icon_class + '">' + _options.toggle_icon_content + '</a>')
         },
 
         // Events
         initEvents: function() {
             // Toggle hidden nav when hamburger icon is clicked
-            $document.on('click.okayNav', '.' + _options.nav_toggle_icon_class, function(event) {
+            $document.on('click.okayNav', '.' + _options.toggle_icon_class, function(event) {
                 event.preventDefault();
                 _okayNav.toggleInvisibleNav();
             });
@@ -102,7 +102,7 @@
          * A few methods to allow working with elements
          */
         getParent: function () {
-            return _options.nav_parent;
+            return _options.parent;
         },
 
         getVisibleNav: function() { // Visible navigation
@@ -121,20 +121,20 @@
          * Operations
          */
         openInvisibleNav: function() {
-            _options.nav_beforeopen.call();
+            _options.beforeopen.call();
             $nav_toggle_icon.addClass('icon--active');
             $nav_invisible.addClass('nav-open');
             _invisibleNavState = true;
-            _options.nav_open.call();
+            _options.open.call();
             $document.trigger('okayNav:open');
         },
 
         closeInvisibleNav: function() {
-            _options.nav_beforeclose.call();
+            _options.beforeclose.call();
             $nav_toggle_icon.removeClass('icon--active');
             $nav_invisible.removeClass('nav-open');
             _invisibleNavState = false;
-            _options.nav_close.call();
+            _options.close.call();
             $document.trigger('okayNav:close');
         },
 
@@ -154,7 +154,7 @@
          * Math stuff
          */
         getParentWidth: function(el) {
-            var parent = el || _options.nav_parent;
+            var parent = el || _options.parent;
             var parent_width = $(parent).outerWidth();
 
             return parent_width;
@@ -177,13 +177,13 @@
         },
 
         recalcNav: function() {
-            var wrapper_width = $(_options.nav_parent).outerWidth();
+            var wrapper_width = $(_options.parent).outerWidth();
             var nav_full_width = $navigation.outerWidth();
             var visible_nav_items = _okayNav.countNavItems($nav_visible);
 
-            var collapse_width = $nav_visible.outerWidth() + _nav_toggle_icon_width;
-            var expand_width = _okayNav.getChildrenWidth(_options.nav_parent) + _last_visible_child_width + _nav_toggle_icon_width;
-            /* _okayNav.getChildrenWidth(_options.nav_parent) gets the total
+            var collapse_width = $nav_visible.outerWidth() + _nav_toggle_icon_width - 1;
+            var expand_width = _okayNav.getChildrenWidth(_options.parent) + _last_visible_child_width + _nav_toggle_icon_width;
+            /* _okayNav.getChildrenWidth(_options.parent) gets the total
                width of the <nav> element and its siblings. */
 
 
