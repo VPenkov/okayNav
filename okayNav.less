@@ -18,17 +18,20 @@
 body.okayNav-loaded {overflow-x: hidden}
 
 .okayNav {
-	// Hide the links by default to avoid FOUC
+
 	&:not(.loaded) {
+		// Hide the links by default to avoid FOUC
 		visibility: hidden;
 		user-select: none;
 	}
 
-	// We want two navigations - one hidden and one visible
-	ul {float: left}
+	ul {
+		/* We want two navigations - one hidden and one visible */
+		float: left
+	}
 
-	// Links general styling
 	a {
+		/* Links general styling */
 		color: @nav-links-color;
 		font-size: @nav-links-font-size;
 		font-weight: bold;
@@ -37,7 +40,6 @@ body.okayNav-loaded {overflow-x: hidden}
 	}
 }
 
-// Link styling for the visible part of the nav
 .okayNav__nav--visible {
 	overflow: hidden;
 	white-space: nowrap;
@@ -45,6 +47,7 @@ body.okayNav-loaded {overflow-x: hidden}
 	li {display: inline-block;}
 
 	a {
+		/* Link styling for the visible part of the nav */
 		display: block;
 		transition: color @nav-transition-speed @nav-transition-curve;
 		padding: @nav-links-padding-y @nav-links-padding-x;
@@ -52,7 +55,7 @@ body.okayNav-loaded {overflow-x: hidden}
 	}
 }
 
-// Link styling for the off-screen part of the nav
+/* Link styling for the off-screen part of the nav */
 .okayNav__nav--invisible {
 	transition: transform 400ms @nav-transition-curve;
 	position: fixed;
@@ -72,7 +75,7 @@ body.okayNav-loaded {overflow-x: hidden}
 	&.nav-open {transform: translateX(0)}
 }
 
-// Kebab icon
+/* Kebab icon */
 .okayNav__menu-toggle {
 	position: relative;
 	transition: transform 400ms @nav-transition-curve;
@@ -103,7 +106,7 @@ body.okayNav-loaded {overflow-x: hidden}
 		&:nth-child(3) {bottom: 0;}
 	}
 
-	&.icon--active { // Kebab icon when off-screen nav is open
+	&.icon--active { /* Kebab icon when off-screen nav is open */
 		transform: rotate(90deg);
 
 		span {background: @nav-links-hover-color}

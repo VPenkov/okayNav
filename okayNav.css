@@ -13,9 +13,11 @@ body.okayNav-loaded {
           user-select: none;
 }
 .okayNav ul {
+  /* We want two navigations - one hidden and one visible */
   float: left;
 }
 .okayNav a {
+  /* Links general styling */
   color: #2e2e33;
   font-size: 1.4rem;
   font-weight: bold;
@@ -30,6 +32,7 @@ body.okayNav-loaded {
   display: inline-block;
 }
 .okayNav__nav--visible a {
+  /* Link styling for the visible part of the nav */
   display: block;
   transition: color 200ms cubic-bezier(0.55, 0, 0.1, 1);
   padding: 15px 15px;
@@ -37,6 +40,7 @@ body.okayNav-loaded {
 .okayNav__nav--visible a:hover {
   color: #546edb;
 }
+/* Link styling for the off-screen part of the nav */
 .okayNav__nav--invisible {
   transition: -webkit-transform 400ms cubic-bezier(0.55, 0, 0.1, 1);
   transition: transform 400ms cubic-bezier(0.55, 0, 0.1, 1);
@@ -63,6 +67,7 @@ body.okayNav-loaded {
       -ms-transform: translateX(0);
           transform: translateX(0);
 }
+/* Kebab icon */
 .okayNav__menu-toggle {
   position: relative;
   transition: -webkit-transform 400ms cubic-bezier(0.55, 0, 0.1, 1);
@@ -100,6 +105,7 @@ body.okayNav-loaded {
   bottom: 0;
 }
 .okayNav__menu-toggle.icon--active {
+  /* Kebab icon when off-screen nav is open */
   -webkit-transform: rotate(90deg);
       -ms-transform: rotate(90deg);
           transform: rotate(90deg);
