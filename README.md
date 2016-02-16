@@ -42,13 +42,13 @@ okayNav supports IE9+, Firefox, Chrome. Transitions work in IE10+.
 ## Default options
 ```javascript
 var navigation = $('#nav-main').okayNav({
-	nav_parent : '', // will call nav's parent() by default
-    nav_toggle_icon_class : 'okayNav__menu-toggle',
-    nav_toggle_icon_content: '<span /><span /><span />',
-    nav_beforeopen : function() {}, // Will trigger before the nav gets opened
-    nav_open : function() {}, // Will trigger after the nav gets opened
-    nav_beforeclose : function() {}, // Will trigger before the nav gets closed
-    nav_close : function() {}, // Will trigger after the nav gets closed
+	parent : '', // will call nav's parent() by default
+    toggle_icon_class : 'okayNav__menu-toggle',
+    toggle_icon_content: '<span /><span /><span />',
+    beforeopen : function() {}, // Will trigger before the nav gets opened
+    open : function() {}, // Will trigger after the nav gets opened
+    beforeclose : function() {}, // Will trigger before the nav gets closed
+    close : function() {}, // Will trigger after the nav gets closed
 });
 ```
 
