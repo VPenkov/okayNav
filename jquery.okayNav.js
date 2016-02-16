@@ -59,11 +59,10 @@
             $navigation
                 .addClass('okayNav loaded')
                 .children('ul').addClass('okayNav__nav--visible');
-                //   .append('<ul class="okayNav__nav--invisible" />'); // add the invisible menu part
 
             // Append elements
             $navigation
-                .append('<ul class="okayNav__nav--invisible"><li><a href="#">Test</a></li></ul>')
+                .append('<ul class="okayNav__nav--invisible" />')
                 .append('<a href="#" class="' + _options.nav_toggle_icon_class + '">' + _options.nav_toggle_icon_content + '</a>')
         },
 
