@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>okayNav Demo</title>
+    <link href='http://fonts.googleapis.com/css?family=Roboto:700,400&subset=latin' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="css/style.css" media="screen" title="no title" charset="utf-8">
+    <link rel="stylesheet" href="../okayNav.css" media="screen" title="no title" charset="utf-8">
+</head>
+<body>
+
+    <header id="header">
+        <a class="site-logo" href="#">
+           Logo
+        </a>
+
+        <nav role="navigation" id="nav-main" class="okayNav">
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Shop</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Contacts</a></li>
+                <li><a href="#">About us</a></li>
+                <li><a href="#">Testimonials</a></li>
+            </ul>
+        </nav>
+    </header><!-- /header -->
+
+    <main>
+        <h1>Resize your browser</h1>
+    </main>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="../jquery.okayNav.min.js"></script>
+    <script type="text/javascript">
+        var navigation = $('#nav-main').okayNav();
+    </script>
+</body>
+</html>
