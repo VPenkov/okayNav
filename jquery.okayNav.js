@@ -182,7 +182,7 @@
             var visible_nav_items = _okayNav.countNavItems($nav_visible);
 
             var collapse_width = $nav_visible.outerWidth(true) + _nav_toggle_icon_width - 1;
-            var expand_width = _okayNav.getChildrenWidth(_options.parent) + _last_visible_child_width + _nav_toggle_icon_width;
+            var expand_width = _okayNav.getChildrenWidth(_options.parent) + _last_visible_child_width + _nav_toggle_icon_width - 10;
             /* _okayNav.getChildrenWidth(_options.parent) gets the total
                width of the <nav> element and its siblings. */
 
