@@ -1,6 +1,6 @@
 /*
  * @Name: jquery.okayNav.js - A progressively responsive navigation
- * @Version: 1.0.1
+ * @Version: 1.0.2
  *
  * @Copyright (c) 2016 Vergil Penkov
  *
@@ -32,6 +32,7 @@
 
         $document = $(document); // for event triggering
         $body = $('body'); // for controlling the overflow
+        $window = $(window);
         $navigation = $(element); // jQuery object
 
         this.options.parent == '' ? this.options.parent = $navigation.parent() : '';
@@ -93,9 +94,11 @@
                 }
             });
 
-            $(window).on('load.okayNav resize.okayNav', function(event) {
+            var debounceResize = _okayNav.windowResize(function(){
                 _okayNav.recalcNav();
-            });
+            }, 50);
+
+            $window.on('load.okayNav resize.okayNav', debounceResize);
         },
 
         /*
@@ -153,6 +156,22 @@
         /*
          * Math stuff
          */
+        windowResize: function(func, wait, immediate) {
+            // Debounce the resize event. Thanks to underscore.js.
+        	var timeout;
+        	return function() {
+        		var context = this, args = arguments;
+        		var later = function() {
+        			timeout = null;
+        			if (!immediate) func.apply(context, args);
+        		};
+        		var callNow = immediate && !timeout;
+        		clearTimeout(timeout);
+        		timeout = setTimeout(later, wait);
+        		if (callNow) func.apply(context, args);
+        	};
+        },
+
         getParentWidth: function(el) {
             var parent = el || _options.parent;
             var parent_width = $(parent).outerWidth(true);
@@ -185,7 +204,6 @@
             var expand_width = _okayNav.getChildrenWidth(_options.parent) + _last_visible_child_width + _nav_toggle_icon_width - 10;
             /* _okayNav.getChildrenWidth(_options.parent) gets the total
                width of the <nav> element and its siblings. */
-
 
             if (visible_nav_items > 0 && nav_full_width <= collapse_width)
                 _okayNav.collapseNavItem();
