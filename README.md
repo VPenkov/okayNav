@@ -97,6 +97,13 @@ Licensed under the [MIT License](https://opensource.org/licenses/MIT).
 ## Support
 Please use the GitHub issues for support requests. If you need someone to implement okayNav for you, hit me up at [vergil@moongrab.com](vergil@moongrab.com).
 
+## Changelog
+**1.0.2**
+Resize events are now a lot more efficient
+
+**1.0.1**
+First public version
+
 ## Tell me what you've created
 Ping me on [Facebook](http://fb.com/vergil.penkov) or [Twitter](http://twitter.com/vergilpenkov). I'd definitely love to see what you've done with okayNav!
 
