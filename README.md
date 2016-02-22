@@ -5,6 +5,8 @@ This navigation aims at progressively collapsing navigation links into an off-sc
 
 ![okayNav Demo](https://raw.githubusercontent.com/VPenkov/okayNav/master/demo/demo.gif)
 
+Or play with it on [CodePen](http://codepen.io/VPenkov/pen/wMZBOg).
+
 ## How to Use
 This is the code used in the example:
 ```html
