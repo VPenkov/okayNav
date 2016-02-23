@@ -139,11 +139,9 @@
 
         toggleInvisibleNav: function() {
             if (!_invisibleNavState) {
-                _invisibleNavState = true;
                 _okayNav.openInvisibleNav();
             }
             else {
-                _invisibleNavState = false;
                 _okayNav.closeInvisibleNav();
             }
         },
