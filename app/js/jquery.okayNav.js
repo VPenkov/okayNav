@@ -41,8 +41,6 @@
 
     Plugin.prototype = {
         init: function () {
-            // Some DOM manipulations
-            _okayNav.setupElements($navigation);
 
             // Cache new elements for further use
             $nav_visible = $navigation.children('.okayNav__nav--visible');
@@ -51,8 +49,11 @@
             _nav_toggle_icon_width = $nav_toggle_icon.outerWidth(true);
             _last_visible_child_width = 0; // We'll define this later
 
-            // Events are up once everything is set
+            // Initialize events
             _okayNav.initEvents();
+
+            // Some DOM manipulations
+            _okayNav.setupElements($navigation);
         },
 
         /*
