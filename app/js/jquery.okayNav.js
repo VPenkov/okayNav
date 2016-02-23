@@ -271,8 +271,3 @@
     };
 
 }(jQuery, window, document));
-
-
-/*
- * @TODO: swipe gestures
-*/
