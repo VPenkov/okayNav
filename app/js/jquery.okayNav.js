@@ -1,11 +1,7 @@
-/*
- * @Name: jquery.okayNav.js - A progressively responsive navigation
- * @Version: 1.0.2
- *
- * @Copyright (c) 2016 Vergil Penkov
- *
- * Licensed under the MIT license: https://opensource.org/licenses/MIT
- * Project home: https://github.com/VPenkov/okayNav
+/*!
+ * jquery.okayNav.js 1.0.2 (https://github.com/VPenkov/okayNav)
+ * Author: Vergil Penkov (http://vergilpenkov.com/)
+ * MIT license: https://opensource.org/licenses/MIT
 */
 
 ;(function ( $, window, document, undefined ) {

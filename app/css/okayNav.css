@@ -51,7 +51,6 @@ body.okayNav-loaded {
   right: 0;
   padding-top: 70px;
   -webkit-transform: translateX(100%);
-      -ms-transform: translateX(100%);
           transform: translateX(100%);
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
@@ -64,7 +63,6 @@ body.okayNav-loaded {
 }
 .okayNav__nav--invisible.nav-open {
   -webkit-transform: translateX(0);
-      -ms-transform: translateX(0);
           transform: translateX(0);
 }
 /* Kebab icon */
@@ -98,7 +96,6 @@ body.okayNav-loaded {
 .okayNav__menu-toggle span:nth-child(2) {
   top: 50%;
   -webkit-transform: translateY(-50%);
-      -ms-transform: translateY(-50%);
           transform: translateY(-50%);
 }
 .okayNav__menu-toggle span:nth-child(3) {
@@ -107,7 +104,6 @@ body.okayNav-loaded {
 .okayNav__menu-toggle.icon--active {
   /* Kebab icon when off-screen nav is open */
   -webkit-transform: rotate(90deg);
-      -ms-transform: rotate(90deg);
           transform: rotate(90deg);
 }
 .okayNav__menu-toggle.icon--active span {

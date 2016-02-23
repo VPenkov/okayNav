@@ -1,0 +1,28 @@
+header {
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    background-color: #fff;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    height: 7rem;
+    padding: 0 15px;
+    position: fixed;
+    -webkit-justify-content: space-between;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    top: 0;
+    width: 100%
+}
+
+.site-logo {
+    transition: color 200ms cubic-bezier(.55, 0, .1, 1);
+    color: #30acff;
+    font-size: 3rem;
+}
+
+.ok-header__logo:hover {color: #546edb}
