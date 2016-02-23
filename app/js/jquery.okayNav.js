@@ -41,6 +41,8 @@
 
     Plugin.prototype = {
         init: function () {
+            // Some DOM manipulations
+            _okayNav.setupElements($navigation);
 
             // Cache new elements for further use
             $nav_visible = $navigation.children('.okayNav__nav--visible');
@@ -49,11 +51,8 @@
             _nav_toggle_icon_width = $nav_toggle_icon.outerWidth(true);
             _last_visible_child_width = 0; // We'll define this later
 
-            // Initialize events
+            // Events are up once everything is set
             _okayNav.initEvents();
-
-            // Some DOM manipulations
-            _okayNav.setupElements($navigation);
         },
 
         /*
@@ -71,7 +70,7 @@
             // Append elements
             $navigation
                 .append('<ul class="okayNav__nav--invisible" />')
-                .append('<a href="#" class="' + _options.toggle_icon_class + '">' + _options.toggle_icon_content + '</a>')
+                .append('<a href="#" class="' + _options.toggle_icon_class + ' okay-invisible">' + _options.toggle_icon_content + '</a>')
         },
 
         // Events
@@ -210,7 +209,7 @@
 
 
             // Hide the kebab icon if no items are hidden
-            $('li', $nav_invisible).length == 0 ? $nav_toggle_icon.hide() : $nav_toggle_icon.show();
+            $('li', $nav_invisible).length == 0 ? $nav_toggle_icon.hide().addClass('okay-invisible') : $nav_toggle_icon.show().removeClass('okay-invisible');
         },
 
         collapseNavItem: function() {

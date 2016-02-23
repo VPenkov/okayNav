@@ -78,6 +78,14 @@ body.okayNav-loaded {
   z-index: 1;
   top: 15px;
 }
+.okayNav__menu-toggle.okay-invisible {
+  position: absolute;
+  opacity: 0;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
 .okayNav__menu-toggle span {
   display: block;
   position: absolute;

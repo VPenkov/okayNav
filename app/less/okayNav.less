@@ -88,6 +88,12 @@ body.okayNav-loaded {overflow-x: hidden}
 	z-index: 1;
 	top: @nav-links-padding-y;
 
+	&.okay-invisible {
+		position: absolute;
+		opacity: 0;
+		user-select: none;
+	}
+
 	span {
 		display: block;
 		position: absolute;
