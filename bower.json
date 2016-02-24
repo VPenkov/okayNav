@@ -1,0 +1,26 @@
+{
+  "name": "okaynav",
+  "description": "Progressively responsive jQuery navigation",
+  "main": "index.js",
+  "authors": [
+    "Vergil Penkov (http://vergilpenkov.com/)"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "responsive",
+    "navigation"
+  ],
+  "main": "dist/js/jquery.okayNav-min.js",
+  "dependencies": {
+    "jquery": ">=1.7"
+  },
+  "homepage": "https://github.com/VPenkov/okayNav",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
