@@ -127,5 +127,8 @@ First public version
 ## Tell me what you've created
 Ping me on [Facebook](http://fb.com/vergil.penkov) or [Twitter](http://twitter.com/vergilpenkov). I'd definitely love to see what you've done with okayNav!
 
+## Contributors
+Many thanks to [@Bloodb0ne](https://github.com/bloodb0ne) for the enormous help with swipe actions!
+
 ## Buy me a beer
 I appreciate good beer and good coffee. If you find this plugin useful and want to say thanks, there's no better way to do it. My PayPal is [vergil@moongrab.com](vergil@moongrab.com).
