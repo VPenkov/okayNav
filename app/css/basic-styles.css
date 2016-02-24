@@ -22,3 +22,8 @@ ul {
     padding: 0;
     list-style: none;
 }
+
+main {
+    margin-top: 10rem;
+    text-align: center;
+}

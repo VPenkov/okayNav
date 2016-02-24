@@ -93,8 +93,9 @@
             // var debounceResize = _okayNav.windowResize(function(){
             //     _okayNav.recalcNav();
             // }, 50);
-            var debounceResize = _okayNav.recalcNav();
-            $window.on('load.okayNav resize.okayNav', debounceResize);
+            $window.on('load.okayNav resize.okayNav', function() {
+                _okayNav.recalcNav();
+            });
         },
 
         /*
