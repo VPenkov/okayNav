@@ -37,6 +37,8 @@
         this.options.parent == '' ? this.options.parent = $navigation.parent() : '';
 
         _nav_visible = false; // Store the state of the hidden nav
+        _nav_full_width = 0;
+        _parent_full_width = 0;
 
         // Swipe stuff
         radCoef = 180 / Math.PI;
@@ -83,7 +85,10 @@
             $nav_visible = $navigation.children('.okayNav__nav--visible');
             $nav_invisible = $navigation.children('.okayNav__nav--invisible');
             $nav_toggle_icon = $navigation.children('.' + _options.toggle_icon_class);
+
             _toggle_icon_width = $nav_toggle_icon.outerWidth(true);
+            _nav_default_width = self.getChildrenWidth($navigation);
+            _parent_full_width = $(_options.parent).outerWidth(true);
             _last_visible_child_width = 0; // We'll define this later
 
             // Events are up once everything is set
@@ -307,10 +312,18 @@
 
         recalcNav: function() {
             var wrapper_width = $(_options.parent).outerWidth(true),
+                space_taken = self.getChildrenWidth(_options.parent),
                 nav_full_width = $navigation.outerWidth(true),
                 visible_nav_items = self.getVisibleItemCount(),
                 collapse_width = $nav_visible.outerWidth(true) + _toggle_icon_width,
-                expand_width = self.getChildrenWidth(_options.parent) + _last_visible_child_width + _toggle_icon_width;
+                expand_width = space_taken + _last_visible_child_width + _toggle_icon_width,
+                expandAll_width = space_taken - nav_full_width + _nav_default_width;
+
+            if (wrapper_width > expandAll_width) {
+                self._expandAllItems();
+                $nav_toggle_icon.addClass('okay-invisible');
+                return;
+            }
 
             if (visible_nav_items > 0 &&
                 nav_full_width <= collapse_width &&
@@ -318,7 +331,7 @@
                 self._collapseNavItem();
             }
 
-            if (wrapper_width > expand_width + _toggle_icon_width) {
+            if (wrapper_width > expand_width + _toggle_icon_width * 2) {
                 self._expandNavItem();
             }
 
@@ -340,12 +353,21 @@
             self.recalcNav();
         },
 
-
         _expandNavItem: function() {
             var $first = $('li:first-child', $nav_invisible);
             $document.trigger('okayNav:expandItem', $first);
             $first.detach().appendTo($nav_visible);
             _options.itemDisplayed.call();
+        },
+
+        _expandAllItems: function() {
+            $('li', $nav_invisible).detach().appendTo($nav_visible);
+            _options.itemDisplayed.call();
+        },
+
+        _collapseAllItems: function() {
+            $('li', $nav_visible).detach().appendTo($nav_invisible);
+            _options.itemHidden.call();
         },
 
         destroy: function() {
