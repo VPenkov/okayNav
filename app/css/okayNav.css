@@ -42,24 +42,33 @@ body.okayNav-loaded {
 }
 /* Link styling for the off-screen part of the nav */
 .okayNav__nav--invisible {
-  transition: -webkit-transform 400ms cubic-bezier(0.55, 0, 0.1, 1);
-  transition: transform 400ms cubic-bezier(0.55, 0, 0.1, 1);
-  transition: transform 400ms cubic-bezier(0.55, 0, 0.1, 1), -webkit-transform 400ms cubic-bezier(0.55, 0, 0.1, 1);
   position: fixed;
-  top: 0;
+  top: 70px;
   bottom: 0;
-  right: 0;
-  padding-top: 70px;
-  -webkit-transform: translateX(100%);
-          transform: translateX(100%);
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
+  background: #fff;
 }
 .okayNav__nav--invisible a {
   background: #fff;
   width: 240px;
   display: block;
   padding: 15px;
+}
+.okayNav__nav--invisible.nav-left {
+  left: 0;
+  -webkit-transform: translateX(-100%);
+          transform: translateX(-100%);
+}
+.okayNav__nav--invisible.nav-right {
+  right: 0;
+  -webkit-transform: translateX(100%);
+          transform: translateX(100%);
+}
+.okayNav__nav--invisible.transition-enabled {
+  transition: -webkit-transform 400ms cubic-bezier(0.55, 0, 0.1, 1);
+  transition: transform 400ms cubic-bezier(0.55, 0, 0.1, 1);
+  transition: transform 400ms cubic-bezier(0.55, 0, 0.1, 1), -webkit-transform 400ms cubic-bezier(0.55, 0, 0.1, 1);
 }
 .okayNav__nav--invisible.nav-open {
   -webkit-transform: translateX(0);
@@ -85,6 +94,7 @@ body.okayNav-loaded {
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
+  pointer-events: none;
 }
 .okayNav__menu-toggle span {
   display: block;

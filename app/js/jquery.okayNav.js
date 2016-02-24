@@ -1,66 +1,67 @@
 /*!
- * jquery.okayNav.js 1.0.2 (https://github.com/VPenkov/okayNav)
+ * jquery.okayNav.js 2.0.0 (https://github.com/VPenkov/okayNav)
  * Author: Vergil Penkov (http://vergilpenkov.com/)
  * MIT license: https://opensource.org/licenses/MIT
-*/
+ */
 
-;(function ( $, window, document, undefined ) {
+;
+(function($, window, document, undefined) {
 
     // Defaults
     var okayNav = 'okayNav',
         defaults = {
-            parent : '', // will call nav's parent() by default
-            toggle_icon_class : 'okayNav__menu-toggle',
+            parent: '', // will call nav's parent() by default
+            toggle_icon_class: 'okayNav__menu-toggle',
             toggle_icon_content: '<span /><span /><span />',
-            beforeopen : function() {}, // Will trigger before the nav gets opened
-            open : function() {}, // Will trigger after the nav gets opened
-            beforeclose : function() {}, // Will trigger before the nav gets closed
-            close : function() {}, // Will trigger after the nav gets closed
+            align_right: true, // If false, the menu and the kebab icon will be on the left
+            swipe_enabled: true, // If true, you'll be able to swipe left/right to open the navigation
+            threshold: 50, // Nav will auto open/close if swiped >= this many percent
+            beforeOpen: function() {}, // Will trigger before the nav gets opened
+            afterOpen: function() {}, // Will trigger after the nav gets opened
+            beforeClose: function() {}, // Will trigger before the nav gets closed
+            afterClose: function() {}, // Will trigger after the nav gets closed
+            itemHidden: function() {},
+            itemDisplayed: function() {}
         };
 
     // Begin
-    function Plugin( element, options ) {
-        this.options = $.extend( {}, defaults, options) ;
-        _okayNav = this; // Plugin
-
-        _invisibleNavState = false; // Is the hidden menu open?
+    function Plugin(element, options) {
+        self = this;
+        this.options = $.extend({}, defaults, options);
         _options = this.options;
 
-        $document = $(document); // for event triggering
-        $body = $('body'); // for controlling the overflow
+        $navigation = $(element);
+        $document = $(document);
         $window = $(window);
-        $navigation = $(element); // jQuery object
 
         this.options.parent == '' ? this.options.parent = $navigation.parent() : '';
 
-        // At this point, we have access to the jQuery element and the options
-        // via the instance, e.g., $navigation and _options. We can access these
-        // anywhere in the plugin.
-        _okayNav.init();
+        _nav_visible = false; // Store the state of the hidden nav
+
+        // Swipe stuff
+        radCoef = 180 / Math.PI;
+        _sTouch = {
+            x: 0,
+            y: 0
+        };
+        _cTouch = {
+            x: 0,
+            y: 0
+        };
+        _sTime = 0;
+        _nav_position = 0;
+        _percent_open = 0;
+        _nav_moving = false;
+
+
+        self.init();
     }
 
     Plugin.prototype = {
-        init: function () {
-            // Some DOM manipulations
-            _okayNav.setupElements($navigation);
 
-            // Cache new elements for further use
-            $nav_visible = $navigation.children('.okayNav__nav--visible');
-            $nav_invisible = $navigation.children('.okayNav__nav--invisible');
-            $nav_toggle_icon = $navigation.children('.' + _options.toggle_icon_class);
-            _nav_toggle_icon_width = $nav_toggle_icon.outerWidth(true);
-            _last_visible_child_width = 0; // We'll define this later
+        init: function() {
 
-            // Events are up once everything is set
-            _okayNav.initEvents();
-        },
-
-        /*
-         * Let's setup the elements and attach events
-         */
-        // Elements
-        setupElements: function(el) {
-            $body.addClass('okayNav-loaded');
+            $('body').addClass('okayNav-loaded');
 
             // Add classes
             $navigation
@@ -68,40 +69,159 @@
                 .children('ul').addClass('okayNav__nav--visible');
 
             // Append elements
-            $navigation
-                .append('<ul class="okayNav__nav--invisible" />')
-                .append('<a href="#" class="' + _options.toggle_icon_class + ' okay-invisible">' + _options.toggle_icon_content + '</a>')
+            if (self.options.align_right) {
+                $navigation
+                    .append('<ul class="okayNav__nav--invisible transition-enabled nav-right" />')
+                    .append('<a href="#" class="' + _options.toggle_icon_class + ' okay-invisible">' + _options.toggle_icon_content + '</a>')
+            } else {
+                $navigation
+                    .prepend('<ul class="okayNav__nav--invisible transition-enabled nav-left" />')
+                    .prepend('<a href="#" class="' + _options.toggle_icon_class + ' okay-invisible">' + _options.toggle_icon_content + '</a>')
+            }
+
+            // Cache new elements for further use
+            $nav_visible = $navigation.children('.okayNav__nav--visible');
+            $nav_invisible = $navigation.children('.okayNav__nav--invisible');
+            $nav_toggle_icon = $navigation.children('.' + _options.toggle_icon_class);
+            _toggle_icon_width = $nav_toggle_icon.outerWidth(true);
+            _last_visible_child_width = 0; // We'll define this later
+
+            // Events are up once everything is set
+            self.initEvents();
+            if (_options.swipe_enabled == true) self.initSwipeEvents();
         },
 
-        // Events
         initEvents: function() {
+            // Toggle hidden nav when hamburger icon is clicked and
+            // Collapse hidden nav on click outside the header
+            $document.on('click.okayNav', function(e) {
+                var _target = $(e.target);
 
-            // Toggle hidden nav when hamburger icon is clicked
-            $document.on('click.okayNav', function(event) {
-                var _target = $(event.target);
-
-                // or close if clicked anywhere else
-                if (_invisibleNavState === true && _target.closest('.okayNav').length == 0)
-                    _okayNav.closeInvisibleNav();
+                if (_nav_visible === true && _target.closest('.okayNav').length == 0)
+                    self.closeInvisibleNav();
 
                 if (_target.hasClass(_options.toggle_icon_class)) {
-                    event.preventDefault();
-                    _okayNav.toggleInvisibleNav();
+                    e.preventDefault();
+                    self.toggleInvisibleNav();
                 }
             });
 
-            // var debounceResize = _okayNav.windowResize(function(){
-            //     _okayNav.recalcNav();
-            // }, 50);
-            $window.on('load.okayNav resize.okayNav', function() {
-                _okayNav.recalcNav();
+            $window.on('load.okayNav resize.okayNav', function(e) {
+                self.recalcNav();
             });
+        },
+
+        initSwipeEvents: function() {
+            $document
+                .on('touchstart.okayNav', function(e) {
+                    $nav_invisible.removeClass('transition-enabled');
+
+                    //Trigger only on touch with one finger
+                    if (e.originalEvent.touches.length == 1) {
+                        var touch = e.originalEvent.touches[0];
+                        if (
+                            ((touch.pageX < 25 && self.options.align_right == false) ||
+                                (touch.pageX > ($(_options.parent).outerWidth(true) - 25) && self.options.align_right == true)) ||
+                            _nav_visible === true) {
+
+                            _sTouch.x = _cTouch.x = touch.pageX;
+                            _sTouch.y = _cTouch.y = touch.pageY;
+                            _sTime = Date.now();
+                        }
+
+                    }
+                })
+                .on('touchmove.okayNav', function(e) {
+                    var touch = e.originalEvent.touches[0];
+                    self._triggerMove(touch.pageX, touch.pageY);
+                    _nav_moving = true;
+                })
+                .on('touchend.okayNav', function(e) {
+                    _sTouch = {
+                        x: 0,
+                        y: 0
+                    };
+                    _cTouch = {
+                        x: 0,
+                        y: 0
+                    };
+                    _sTime = 0;
+
+                    //Close menu if not swiped enough
+                    if (_percent_open > (100 - self.options.threshold)) {
+                        _nav_position = 0;
+                        self.closeInvisibleNav();
+
+                    } else if (_nav_moving == true) {
+                        _nav_position = $nav_invisible.width();
+                        self.openInvisibleNav();
+                    }
+
+                    _nav_moving = false;
+
+                    $nav_invisible.addClass('transition-enabled');
+                });
+        },
+
+        _getDirection: function(dx) {
+            if (self.options.align_right) {
+                return (dx > 0) ? -1 : 1;
+            } else {
+                return (dx < 0) ? -1 : 1;
+            }
+        },
+
+        _triggerMove: function(x, y) {
+            _cTouch.x = x;
+            _cTouch.y = y;
+
+            var currentTime = Date.now();
+            var dx = (_cTouch.x - _sTouch.x);
+            var dy = (_cTouch.y - _sTouch.y);
+
+            var opposing = dy * dy;
+            var distance = Math.sqrt(dx * dx + opposing);
+            //Length of the opposing side of the 90deg triagle
+            var dOpposing = Math.sqrt(opposing);
+
+            var angle = Math.asin(Math.sin(dOpposing / distance)) * radCoef;
+            var speed = distance / (currentTime - _sTime);
+
+            //Set new start position
+            _sTouch.x = x;
+            _sTouch.y = y;
+
+            //Remove false swipes
+            if (angle < 20) {
+                var dir = self._getDirection(dx);
+
+                var newPos = _nav_position + dir * distance;
+                var menuWidth = $nav_invisible.width();
+                var overflow = 0;
+
+
+                if (newPos < 0) {
+                    overflow = -newPos;
+                } else if (newPos > menuWidth) {
+                    overflow = menuWidth - newPos;
+                }
+
+                var size = menuWidth - (_nav_position + dir * distance + overflow);
+                var threshold = (size / menuWidth) * 100;
+
+                //Set new position and threshold
+                _nav_position += dir * distance + overflow;
+                _percent_open = threshold;
+
+                $nav_invisible.css('transform', 'translateX(' + (self.options.align_right ? 1 : -1) * threshold + '%)');
+            }
+
         },
 
         /*
          * A few methods to allow working with elements
          */
-        getParent: function () {
+        getParent: function() {
             return _options.parent;
         },
 
@@ -121,29 +241,46 @@
          * Operations
          */
         openInvisibleNav: function() {
-            _options.beforeopen.call();
+            !_options.enable_swipe ? _options.beforeOpen.call() : '';
+
             $nav_toggle_icon.addClass('icon--active');
             $nav_invisible.addClass('nav-open');
-            _invisibleNavState = true;
-            _options.open.call();
-            $document.trigger('okayNav:open');
+            _nav_visible = true;
+            $nav_invisible.css({
+                '-webkit-transform': 'translateX(0%)',
+                'transform': 'translateX(0%)'
+            });
+
+            _options.afterOpen.call();
         },
 
         closeInvisibleNav: function() {
-            _options.beforeclose.call();
+            !_options.enable_swipe ? _options.beforeClose.call() : '';
+
             $nav_toggle_icon.removeClass('icon--active');
             $nav_invisible.removeClass('nav-open');
-            _invisibleNavState = false;
-            _options.close.call();
-            $document.trigger('okayNav:close');
+
+            if (self.options.align_right) {
+                $nav_invisible.css({
+                    '-webkit-transform': 'translateX(100%)',
+                    'transform': 'translateX(100%)'
+                });
+            } else {
+                $nav_invisible.css({
+                    '-webkit-transform': 'translateX(-100%)',
+                    'transform': 'translateX(-100%)'
+                });
+            }
+            _nav_visible = false;
+
+            _options.afterClose.call();
         },
 
         toggleInvisibleNav: function() {
-            if (!_invisibleNavState) {
-                _okayNav.openInvisibleNav();
-            }
-            else {
-                _okayNav.closeInvisibleNav();
+            if (!_nav_visible) {
+                self.openInvisibleNav();
+            } else {
+                self.closeInvisibleNav();
             }
         },
 
@@ -151,81 +288,64 @@
         /*
          * Math stuff
          */
-        windowResize: function(func, wait, immediate) {
-            // Debounce the resize event. Thanks to underscore.js.
-        	var timeout;
-        	return function() {
-        		var context = this, args = arguments;
-        		var later = function() {
-        			timeout = null;
-        			if (!immediate) func.apply(context, args);
-        		};
-        		var callNow = immediate && !timeout;
-        		clearTimeout(timeout);
-        		timeout = setTimeout(later, wait);
-        		if (callNow) func.apply(context, args);
-        	};
-        },
-
-        getParentWidth: function(el) {
-            var parent = el || _options.parent;
-            var parent_width = $(parent).outerWidth(true);
-
-            return parent_width;
-        },
-
         getChildrenWidth: function(el) {
             var children_width = 0;
-            $(el).children().each(function() {
-                children_width += $(this).outerWidth(true);
-            });
+            var children = $(el).children();
+            for (var i = 0; i < children.length; i++) {
+                children_width += $(children[i]).outerWidth(true);
+            };
 
             return children_width;
         },
 
-        countNavItems: function(el) {
-            var $menu = $(el);
-            var items = $('li', $menu).length;
-
-            return items;
+        getVisibleItemCount: function() {
+            return $('li', $nav_visible).length;
+        },
+        getHiddenItemCount: function() {
+            return $('li', $nav_invisible).length;
         },
 
         recalcNav: function() {
-            var wrapper_width = $(_options.parent).outerWidth(true);
-            var nav_full_width = $navigation.outerWidth(true);
-            var visible_nav_items = _okayNav.countNavItems($nav_visible);
+            var wrapper_width = $(_options.parent).outerWidth(true),
+                nav_full_width = $navigation.outerWidth(true),
+                visible_nav_items = self.getVisibleItemCount(),
+                collapse_width = $nav_visible.outerWidth(true) + _toggle_icon_width,
+                expand_width = self.getChildrenWidth(_options.parent) + _last_visible_child_width + _toggle_icon_width;
 
-            var collapse_width = $nav_visible.outerWidth(true) + _nav_toggle_icon_width - 1;
-            var expand_width = _okayNav.getChildrenWidth(_options.parent) + _last_visible_child_width + _nav_toggle_icon_width - 10;
-            /* _okayNav.getChildrenWidth(_options.parent) gets the total
-               width of the <nav> element and its siblings. */
+            if (visible_nav_items > 0 &&
+                nav_full_width <= collapse_width &&
+                wrapper_width <= expand_width) {
+                self._collapseNavItem();
+            }
 
-            if (visible_nav_items > 0 && nav_full_width <= collapse_width)
-                _okayNav.collapseNavItem();
-
-            if (wrapper_width > expand_width)
-                _okayNav.expandNavItem();
-
+            if (wrapper_width > expand_width + _toggle_icon_width) {
+                self._expandNavItem();
+            }
 
             // Hide the kebab icon if no items are hidden
-            $('li', $nav_invisible).length == 0 ? $nav_toggle_icon.hide().addClass('okay-invisible') : $nav_toggle_icon.show().removeClass('okay-invisible');
+            self.getHiddenItemCount() == 0 ?
+                $nav_toggle_icon.addClass('okay-invisible') :
+                $nav_toggle_icon.removeClass('okay-invisible');
         },
 
-        collapseNavItem: function() {
+        _collapseNavItem: function() {
             var $last_child = $('li:last-child', $nav_visible);
             _last_visible_child_width = $last_child.outerWidth(true);
+            $document.trigger('okayNav:collapseItem', $last_child);
             $last_child.detach().prependTo($nav_invisible);
-
+            _options.itemHidden.call();
             // All nav items are visible by default
             // so we only need recursion when collapsing
-            _okayNav.recalcNav();
-            $document.trigger('okayNav:collapseItem');
+
+            self.recalcNav();
         },
 
 
-        expandNavItem: function() {
-            $('li:first-child', $nav_invisible).detach().appendTo($nav_visible);
-            $document.trigger('okayNav:expandItem');
+        _expandNavItem: function() {
+            var $first = $('li:first-child', $nav_invisible);
+            $document.trigger('okayNav:expandItem', $first);
+            $first.detach().appendTo($nav_visible);
+            _options.itemDisplayed.call();
         },
 
         destroy: function() {
@@ -235,33 +355,33 @@
             $nav_toggle_icon.remove();
 
             $document.unbind('.okayNav');
-            $(window).unbind('.okayNav');
+            $window.unbind('.okayNav');
         }
 
     }
 
     // Plugin wrapper
-    $.fn[okayNav] = function ( options ) {
+    $.fn[okayNav] = function(options) {
         var args = arguments;
 
         if (options === undefined || typeof options === 'object') {
-            return this.each(function () {
+            return this.each(function() {
                 if (!$.data(this, 'plugin_' + okayNav)) {
-                    $.data(this, 'plugin_' + okayNav, new Plugin( this, options ));
+                    $.data(this, 'plugin_' + okayNav, new Plugin(this, options));
                 }
             });
 
         } else if (typeof options === 'string' && options[0] !== '_' && options !== 'init') {
 
             var returns;
-            this.each(function () {
+            this.each(function() {
                 var instance = $.data(this, 'plugin_' + okayNav);
                 if (instance instanceof Plugin && typeof instance[options] === 'function') {
-                    returns = instance[options].apply( instance, Array.prototype.slice.call( args, 1 ) );
+                    returns = instance[options].apply(instance, Array.prototype.slice.call(args, 1));
                 }
 
                 if (options === 'destroy') {
-                  $.data(this, 'plugin_' + okayNav, null);
+                    $.data(this, 'plugin_' + okayNav, null);
                 }
             });
 

@@ -55,14 +55,27 @@ var navigation = $('#nav-main').okayNav({
 	parent : '', // will call nav's parent() by default
     toggle_icon_class : 'okayNav__menu-toggle',
     toggle_icon_content: '<span /><span /><span />',
-    beforeopen : function() {}, // Will trigger before the nav gets opened
-    open : function() {}, // Will trigger after the nav gets opened
-    beforeclose : function() {}, // Will trigger before the nav gets closed
-    close : function() {}, // Will trigger after the nav gets closed
+    align_right: true, // If false, the menu and the kebab icon will be on the left
+    swipe_enabled: true, // If true, you'll be able to swipe left/right to open the navigation
+    threshold: 50, // Nav will auto open/close if swiped >= this many percent
+    beforeOpen : function() {}, // Will trigger before the nav gets opened
+    afterOpen : function() {}, // Will trigger after the nav gets opened
+    beforeClose : function() {}, // Will trigger before the nav gets closed
+    afterClose : function() {}, // Will trigger after the nav gets closed
+    itemHidden: function() {}, // Will trigger after an item moves to the hidden navigation
+    itemDisplayed: function() {} // Will trigger after an item moves to the visible navigation
 });
 ```
 
 ## Methods
+Open the off-screen part: ``navigation.okayNav('openInvisibleNav');``
+
+Close the off-screen part``navigation.okayNav('closeInvisibleNav');``
+
+Toggle the off-screen part``navigation.okayNav('toggleInvisibleNav');``
+
+Recalculate what should be visible and what shouldn't: ``navigation.okayNav('recalcNav');``
+
 Get the nav's parent element: ``navigation.okayNav('getParent');``
 
 Get the nav's visible part: ``navigation.okayNav('getVisibleNav');``
@@ -71,15 +84,7 @@ Get the nav's off-screen part: ``navigation.okayNav('getInvisibleNav');``
 
 Get the nav's toggle icon: ``navigation.okayNav('getNavToggleIcon');``
 
-Open the off-screen part: ``navigation.okayNav('openInvisibleNav');``
-
-Close the off-screen part``navigation.okayNav('closeInvisibleNav');``
-
-Toggle the off-screen part``navigation.okayNav('toggleInvisibleNav');``
-
 Get the nav children's total width: ``navigation.okayNav('getChildrenWidth');``
-
-Recalculate what should be visible and what shouldn't: ``navigation.okayNav('recalcNav');``
 
 Destroy the nav, make everything visible, disable all events: ``navigation.okayNav('destroy');``
 
@@ -98,6 +103,16 @@ Licensed under the [MIT License](https://opensource.org/licenses/MIT).
 Please use the GitHub issues for support requests. If you need someone to implement okayNav for you, hit me up at [vergil@moongrab.com](vergil@moongrab.com).
 
 ## Changelog
+**2.0.0**
+- Swipe actions are now available;
+- Swipe can be enabled or disabled;
+- You can adjust the threshold after which the swipe action will trigger;
+- Added extra callbacks;
+- Callbacks are now camelCased;
+- The beforeOpen/beforeClose callbacks now only trigger if swipe is disabled (for obvious reasons).
+
+Scroll up to see the defaults for more information!
+
 **1.0.2**
 Resize events are now a lot more efficient
 

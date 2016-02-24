@@ -8,6 +8,7 @@
 
 @nav-transition-curve: cubic-bezier(.55,0,.1,1);
 @nav-transition-speed: 200ms;
+@nav-invisible-background: #fff;
 
 @header-height: 70px; // Hidden nav's top offset
 
@@ -57,15 +58,12 @@ body.okayNav-loaded {overflow-x: hidden}
 
 /* Link styling for the off-screen part of the nav */
 .okayNav__nav--invisible {
-	transition: transform 400ms @nav-transition-curve;
 	position: fixed;
-	top: 0;
+	top: @header-height;
 	bottom: 0;
-	right: 0;
-	padding-top: @header-height;
-	transform: translateX(100%);
 	overflow-y: scroll;
 	-webkit-overflow-scrolling: touch;
+	background: @nav-invisible-background;
 
 	a {
 		background: #fff;
@@ -74,6 +72,15 @@ body.okayNav-loaded {overflow-x: hidden}
 		padding: 15px;
 	}
 
+	&.nav-left {
+		left: 0;
+		transform: translateX(-100%);
+	}
+	&.nav-right {
+		right: 0;
+		transform: translateX(100%);
+	}
+	&.transition-enabled {transition: transform 400ms @nav-transition-curve}
 	&.nav-open {transform: translateX(0)}
 }
 
@@ -92,6 +99,7 @@ body.okayNav-loaded {overflow-x: hidden}
 		position: absolute;
 		opacity: 0;
 		user-select: none;
+		pointer-events: none;
 	}
 
 	span {
