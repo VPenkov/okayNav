@@ -75,25 +75,25 @@
 
         // Events
         initEvents: function() {
-            // Toggle hidden nav when hamburger icon is clicked
-            $document.on('click.okayNav', '.' + _options.toggle_icon_class, function(event) {
-                event.preventDefault();
-                _okayNav.toggleInvisibleNav();
-            });
 
-            // Collapse hidden nav on click outside the header
+            // Toggle hidden nav when hamburger icon is clicked
             $document.on('click.okayNav', function(event) {
-                if (_invisibleNavState === true) {
-                    var _target = $(event.target);
-                    if (!_target.parents().hasClass('okayNav'))
-                        _okayNav.closeInvisibleNav();
+                var _target = $(event.target);
+
+                // or close if clicked anywhere else
+                if (_invisibleNavState === true && _target.closest('.okayNav').length == 0)
+                    _okayNav.closeInvisibleNav();
+
+                if (_target.hasClass(_options.toggle_icon_class)) {
+                    event.preventDefault();
+                    _okayNav.toggleInvisibleNav();
                 }
             });
 
-            var debounceResize = _okayNav.windowResize(function(){
-                _okayNav.recalcNav();
-            }, 50);
-
+            // var debounceResize = _okayNav.windowResize(function(){
+            //     _okayNav.recalcNav();
+            // }, 50);
+            var debounceResize = _okayNav.recalcNav();
             $window.on('load.okayNav resize.okayNav', debounceResize);
         },
 
