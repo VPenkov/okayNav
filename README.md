@@ -103,6 +103,10 @@ Licensed under the [MIT License](https://opensource.org/licenses/MIT).
 Please use the GitHub issues for support requests. If you need someone to implement okayNav for you, hit me up at [vergil@moongrab.com](vergil@moongrab.com).
 
 ## Changelog
+**2.0.1**
+- Flexbox is now optional; nav will work with floats too;
+- Resolved a bug when maximizing the browser.
+
 **2.0.0**
 - Swipe actions are now available;
 - Swipe can be enabled or disabled;
