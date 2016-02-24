@@ -90,9 +90,10 @@ Destroy the nav, make everything visible, disable all events: ``navigation.okayN
 
 ## Roadmap
 The following features will be implemented at the next versions:
-- Swipe gestures
-- A callback when a nav item is collapsed/expanded
-- AMD support
+- AMD/CommonJS support
+- Multi-level navigation
+- Option to prioritize certain nav items
+- Option to hide or show all nav items instead of doing it progressively
 
 Pull requests are appreciated.
 
