@@ -38,7 +38,7 @@ gulp.task('useref', function(){
 
 gulp.task('clean:dist', function() {
   return del.sync('dist');
-})
+});
 
 gulp.task('watch', ['browserSync', 'less'], function(){
   gulp.watch('app/less/**/*.less', ['less']);
@@ -49,7 +49,7 @@ gulp.task('watch', ['browserSync', 'less'], function(){
 gulp.task('build', ['clean:dist'], function (){
   gulp.start('less', 'useref');
   console.log('Building files');
-})
+});
 
 // Default task
 gulp.task('default', function() {
