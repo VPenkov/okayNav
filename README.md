@@ -116,7 +116,7 @@ Please use the GitHub issues for support requests. If you need someone to implem
 - Callbacks are now camelCased;
 - The beforeOpen/beforeClose callbacks now only trigger if swipe is disabled (for obvious reasons).
 
-Scroll up to see the defaults for more information!
+[Scroll up](#default-options) to see the defaults for more information!
 
 **1.0.2**
 Resize events are now a lot more efficient
