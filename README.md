@@ -1,4 +1,8 @@
 #okayNav jQuery Plugin
+
+[![Join the chat at https://gitter.im/VPenkov/okayNav](https://badges.gitter.im/VPenkov/okayNav.svg)](https://gitter.im/VPenkov/okayNav?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+
 You know how navigations have only a desktop and a mobile state, right? I thought, "this might cost people money because it requires additional click for users to reach even the most important pages."
 
 This navigation aims at progressively collapsing navigation links into an off-screen navigation instead of doing it for all the links at the same time. Check out this example:
