@@ -1,6 +1,6 @@
 #okayNav jQuery Plugin
 
-[![Join the chat at https://gitter.im/VPenkov/okayNav](https://badges.gitter.im/VPenkov/okayNav.svg)](https://gitter.im/VPenkov/okayNav?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/VPenkov/okayNav](https://badges.gitter.im/VPenkov/okayNav.svg)](https://gitter.im/VPenkov/okayNav?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)  
 
 
 You know how navigations have only a desktop and a mobile state, right? I thought, "this might cost people money because it requires additional click for users to reach even the most important pages."
@@ -108,11 +108,11 @@ Licensed under the [MIT License](https://opensource.org/licenses/MIT).
 Please use the GitHub issues for support requests. If you need someone to implement okayNav for you, hit me up at [vergil@moongrab.com](vergil@moongrab.com).
 
 ## Changelog
-**2.0.1**
+**2.0.1**  
 - Flexbox is now optional; nav will work with floats too;
 - Resolved a bug when maximizing the browser.
 
-**2.0.0**
+**2.0.0**  
 - Swipe actions are now available;
 - Swipe can be enabled or disabled;
 - You can adjust the threshold after which the swipe action will trigger;
@@ -122,10 +122,10 @@ Please use the GitHub issues for support requests. If you need someone to implem
 
 [Scroll up](#default-options) to see the defaults for more information!
 
-**1.0.2**
+**1.0.2**  
 Resize events are now a lot more efficient
 
-**1.0.1**
+**1.0.1**  
 First public version
 
 ## Tell me what you've created
