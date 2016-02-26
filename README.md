@@ -7,7 +7,7 @@ You know how navigations have only a desktop and a mobile state, right? I though
 
 This navigation aims at progressively collapsing navigation links into an off-screen navigation instead of doing it for all the links at the same time. Check out this example:
 
-![okayNav Demo](demo.gif)
+![okayNav Demo](https://raw.githubusercontent.com/VPenkov/okayNav/master/demo.gif)
 
 Or play with it on [CodePen](http://codepen.io/VPenkov/pen/wMZBOg).
 
