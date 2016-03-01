@@ -4,8 +4,7 @@
  * MIT license: https://opensource.org/licenses/MIT
  */
 
-;
-(function($, window, document, undefined) {
+;(function($, window, document, undefined) {
 
     // Defaults
     var okayNav = 'okayNav',
@@ -16,6 +15,7 @@
             align_right: true, // If false, the menu and the kebab icon will be on the left
             swipe_enabled: true, // If true, you'll be able to swipe left/right to open the navigation
             threshold: 50, // Nav will auto open/close if swiped >= this many percent
+            resize_delay: 10, // When resizing the window, okayNav can throttle its recalculations if enabled. Setting this to 50-250 will improve performance but make okayNav less accurate.
             beforeOpen: function() {}, // Will trigger before the nav gets opened
             afterOpen: function() {}, // Will trigger after the nav gets opened
             beforeClose: function() {}, // Will trigger before the nav gets closed
@@ -111,9 +111,8 @@
                 }
             });
 
-            $window.on('load.okayNav resize.okayNav', function(e) {
-                self.recalcNav();
-            });
+            var optimizeResize = self._debounce(function(){self.recalcNav()}, _options.recalc_delay);
+            $window.on('load.okayNav resize.okayNav', optimizeResize);
         },
 
         initSwipeEvents: function() {
@@ -126,8 +125,9 @@
                         var touch = e.originalEvent.touches[0];
                         if (
                             ((touch.pageX < 25 && self.options.align_right == false) ||
-                                (touch.pageX > ($(_options.parent).outerWidth(true) - 25) && self.options.align_right == true)) ||
-                            _nav_visible === true) {
+                                (touch.pageX > ($(_options.parent).outerWidth(true) - 25) &&
+                                self.options.align_right == true)) ||
+                                _nav_visible === true) {
 
                             _sTouch.x = _cTouch.x = touch.pageX;
                             _sTouch.y = _cTouch.y = touch.pageY;
@@ -245,6 +245,21 @@
         /*
          * Operations
          */
+        _debounce: function(func, wait, immediate) {
+            var timeout;
+        	return function() {
+        		var context = this, args = arguments;
+        		var later = function() {
+        			timeout = null;
+        			if (!immediate) func.apply(context, args);
+        		};
+        		var callNow = immediate && !timeout;
+        		clearTimeout(timeout);
+        		timeout = setTimeout(later, wait);
+        		if (callNow) func.apply(context, args);
+        	};
+        },
+
         openInvisibleNav: function() {
             !_options.enable_swipe ? _options.beforeOpen.call() : '';
 
@@ -331,7 +346,7 @@
                 self._collapseNavItem();
             }
 
-            if (wrapper_width > expand_width + _toggle_icon_width * 2) {
+            if (wrapper_width > expand_width + _toggle_icon_width + 15) {
                 self._expandNavItem();
             }
 
