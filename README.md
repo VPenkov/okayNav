@@ -135,4 +135,6 @@ Ping me on [Facebook](http://fb.com/vergil.penkov) or [Twitter](http://twitter.c
 Many thanks to [@Bloodb0ne](https://github.com/bloodb0ne) for the enormous help with swipe actions!
 
 ## Buy me a beer
-I appreciate good beer and good coffee. If you find this plugin useful and want to say thanks, there's no better way to do it. My PayPal is [vergil@moongrab.com](vergil@moongrab.com).
+I appreciate good beer and good coffee. If you find this plugin useful and want to say thanks, there's no better way to do it. My PayPal is available below.  
+  
+[![Donate! :3](https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9CVK8L6CKVY2Y)
