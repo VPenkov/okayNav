@@ -108,6 +108,9 @@ Licensed under the [MIT License](https://opensource.org/licenses/MIT).
 Please use the GitHub issues for support requests. If you need someone to implement okayNav for you, hit me up at [vergil@moongrab.com](vergil@moongrab.com).
 
 ## Changelog
+**2.0.2**  
+Reintroduced throttling on window resize.
+
 **2.0.1**  
 - Flexbox is now optional; nav will work with floats too;
 - Resolved a bug when maximizing the browser.
@@ -123,17 +126,17 @@ Please use the GitHub issues for support requests. If you need someone to implem
 [Scroll up](#default-options) to see the defaults for more information!
 
 **1.0.2**  
-Resize events are now a lot more efficient
-
+Resize events are now a lot more efficient  
+  
 **1.0.1**  
 First public version
-
+  
 ## Tell me what you've created
 Ping me on [Facebook](http://fb.com/vergil.penkov) or [Twitter](http://twitter.com/vergilpenkov). I'd definitely love to see what you've done with okayNav!
-
+  
 ## Contributors
 Many thanks to [@Bloodb0ne](https://github.com/bloodb0ne) for the enormous help with swipe actions!
-
+  
 ## Buy me a beer
 I appreciate good beer and good coffee. If you find this plugin useful and want to say thanks, there's no better way to do it. My PayPal is available below.  
   
