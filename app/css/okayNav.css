@@ -1,3 +1,4 @@
+/* Hidden nav's top offset */
 /*
  * We are hiding the invisible nav outside the screen
  * so we need to avoid the horizontal scroll
@@ -6,11 +7,12 @@ body.okayNav-loaded {
   overflow-x: hidden;
 }
 .okayNav:not(.loaded) {
-  visibility: hidden;
+  /* Hide the links by default to avoid FOUC */
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
+  visibility: hidden;
 }
 .okayNav ul {
   /* We want two navigations - one hidden and one visible */
@@ -34,26 +36,26 @@ body.okayNav-loaded {
 .okayNav__nav--visible a {
   /* Link styling for the visible part of the nav */
   display: block;
-  transition: color 200ms cubic-bezier(0.55, 0, 0.1, 1);
   padding: 15px 15px;
+  transition: color 200ms cubic-bezier(0.55, 0, 0.1, 1);
 }
 .okayNav__nav--visible a:hover {
   color: #546edb;
 }
 /* Link styling for the off-screen part of the nav */
 .okayNav__nav--invisible {
+  background: #fff;
+  bottom: 0;
+  -webkit-overflow-scrolling: touch;
+  overflow-y: scroll;
   position: fixed;
   top: 70px;
-  bottom: 0;
-  overflow-y: scroll;
-  -webkit-overflow-scrolling: touch;
-  background: #fff;
 }
 .okayNav__nav--invisible a {
   background: #fff;
-  width: 240px;
   display: block;
   padding: 15px;
+  width: 240px;
 }
 .okayNav__nav--invisible.nav-left {
   left: 0;
@@ -76,37 +78,37 @@ body.okayNav-loaded {
 }
 /* Kebab icon */
 .okayNav__menu-toggle {
+  cursor: pointer;
+  float: left;
+  height: 20px;
   position: relative;
+  top: 15px;
   transition: -webkit-transform 400ms cubic-bezier(0.55, 0, 0.1, 1);
   transition: transform 400ms cubic-bezier(0.55, 0, 0.1, 1);
   transition: transform 400ms cubic-bezier(0.55, 0, 0.1, 1), -webkit-transform 400ms cubic-bezier(0.55, 0, 0.1, 1);
-  cursor: pointer;
   width: 40px;
-  height: 20px;
-  float: left;
   z-index: 1;
-  top: 15px;
 }
 .okayNav__menu-toggle.okay-invisible {
-  position: absolute;
   opacity: 0;
+  pointer-events: none;
+  position: absolute;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
-  pointer-events: none;
 }
 .okayNav__menu-toggle span {
-  display: block;
-  position: absolute;
-  margin: auto;
-  height: 4px;
-  width: 4px;
   background: #2e2e33;
   border-radius: 50%;
+  display: block;
+  height: 4px;
   left: 0;
-  right: 0;
+  margin: auto;
   pointer-events: none;
+  position: absolute;
+  right: 0;
+  width: 4px;
 }
 .okayNav__menu-toggle span:nth-child(1) {
   top: 0;
