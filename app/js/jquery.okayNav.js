@@ -332,7 +332,7 @@
                 visible_nav_items = self.getVisibleItemCount(),
                 collapse_width = $nav_visible.outerWidth(true) + _toggle_icon_width,
                 expand_width = space_taken + _last_visible_child_width + _toggle_icon_width,
-                expandAll_width = space_taken - nav_full_width + _nav_default_width;
+                expandAll_width = space_taken - nav_full_width + self.getChildrenWidth($navigation);
 
             if (wrapper_width > expandAll_width) {
                 self._expandAllItems();
