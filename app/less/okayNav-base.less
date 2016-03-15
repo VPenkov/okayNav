@@ -45,6 +45,11 @@ body.okayNav-loaded {overflow-x: hidden}
 	a {
 		position: relative;
 		z-index: 1;
+
+		&:only-of-type {
+			// Bring the kebab icon back to the top if it's alone
+			top: 0;
+		}
 	}
 }
 

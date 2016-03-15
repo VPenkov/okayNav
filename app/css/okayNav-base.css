@@ -40,6 +40,9 @@ body.okayNav-loaded {
   position: relative;
   z-index: 1;
 }
+.okayNav a:only-of-type {
+  top: 0;
+}
 .okayNav__nav--visible {
   overflow: hidden;
   white-space: nowrap;
