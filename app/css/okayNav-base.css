@@ -6,22 +6,24 @@ body.okayNav-loaded {
   overflow-x: hidden;
 }
 .okayNav-header {
-  -webkit-align-items: center;
-  -ms-flex-align: center;
-  align-items: center;
+  position: fixed;
+  top: 0;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
   -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  width: 100%;
+  padding: 0 15px;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: row;
   -ms-flex-direction: row;
-  flex-direction: row;
   -webkit-justify-content: space-between;
   -ms-flex-pack: justify;
   justify-content: space-between;
-  padding: 0 15px;
-  position: fixed;
-  top: 0;
-  width: 100%;
 }
 .okayNav:not(.loaded) {
   visibility: hidden;
@@ -48,8 +50,8 @@ body.okayNav-loaded {
 .okayNav__nav--visible a {
   /* Link styling for the visible part of the nav */
   display: block;
-  transition: color 200ms cubic-bezier(0.55, 0, 0.1, 1);
   padding: 15px 15px;
+  transition: color 200ms cubic-bezier(0.55, 0, 0.1, 1);
 }
 /* Link styling for the off-screen part of the nav */
 .okayNav__nav--invisible {
@@ -60,10 +62,10 @@ body.okayNav-loaded {
   -webkit-overflow-scrolling: touch;
 }
 .okayNav__nav--invisible a {
-  background: #fff;
-  width: 240px;
   display: block;
+  width: 240px;
   padding: 15px;
+  background: #fff;
 }
 .okayNav__nav--invisible.nav-left {
   left: 0;
@@ -87,35 +89,35 @@ body.okayNav-loaded {
 /* Kebab icon */
 .okayNav__menu-toggle {
   position: relative;
+  z-index: 1;
+  top: 15px;
+  float: left;
+  width: 40px;
+  height: 20px;
+  cursor: pointer;
   transition: -webkit-transform 400ms cubic-bezier(0.55, 0, 0.1, 1);
   transition: transform 400ms cubic-bezier(0.55, 0, 0.1, 1);
   transition: transform 400ms cubic-bezier(0.55, 0, 0.1, 1), -webkit-transform 400ms cubic-bezier(0.55, 0, 0.1, 1);
-  cursor: pointer;
-  width: 40px;
-  height: 20px;
-  float: left;
-  z-index: 1;
-  top: 15px;
 }
 .okayNav__menu-toggle.okay-invisible {
   position: absolute;
-  opacity: 0;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
   pointer-events: none;
+  opacity: 0;
 }
 .okayNav__menu-toggle span {
-  display: block;
   position: absolute;
-  margin: auto;
-  height: 4px;
-  width: 4px;
-  border-radius: 50%;
-  left: 0;
   right: 0;
+  left: 0;
+  display: block;
+  width: 4px;
+  height: 4px;
+  margin: auto;
   pointer-events: none;
+  border-radius: 50%;
 }
 .okayNav__menu-toggle span:nth-child(1) {
   top: 0;

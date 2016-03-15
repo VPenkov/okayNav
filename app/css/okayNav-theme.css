@@ -1,11 +1,11 @@
 .okayNav-header {
-  background-color: #fff;
   height: 7rem;
+  background-color: #fff;
 }
 .okayNav a {
   color: #2e2e33;
-  font-weight: bold;
   font-size: 1.4rem;
+  font-weight: bold;
 }
 .okayNav a:hover {
   color: #546edb;
