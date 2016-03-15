@@ -1,6 +1,6 @@
 {
   "name": "okaynav",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Progressively responsive jQuery navigation",
   "main": "index.js",
   "scripts": {
