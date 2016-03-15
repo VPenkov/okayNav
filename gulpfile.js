@@ -9,7 +9,7 @@ var cssnano = require('gulp-cssnano');
 var autoprefixer = require('gulp-autoprefixer');
 
 gulp.task('less', function() {
-  return gulp.src('app/less/**/*.less') // Get source files with gulp.src
+  return gulp.src(['app/less/okayNav-base.less', 'app/less/okayNav-theme.less']) // Get source files with gulp.src
     .pipe(less())
     .pipe(autoprefixer('last 2 version', 'safari 5', 'opera 12.1', 'ios 6', 'android 4'))
     .pipe(gulp.dest('app/css'))

@@ -1,16 +1,4 @@
-@nav-links-color: #2e2e33;
-@nav-links-hover-color: #546edb;
-
-@nav-links-font-size: 1.4rem;
-@nav-links-font-weight: bold;
-@nav-links-padding-x: 15px;
-@nav-links-padding-y: 15px;
-
-@nav-transition-curve: cubic-bezier(.55,0,.1,1);
-@nav-transition-speed: 200ms;
-@nav-invisible-background: #fff;
-
-@header-height: 70px; // Hidden nav's top offset
+@import "okayNav-vars.less";
 
 /*
  * We are hiding the invisible nav outside the screen
@@ -18,11 +6,34 @@
  */
 body.okayNav-loaded {overflow-x: hidden}
 
+.okayNav-header {
+    position: fixed;
+    top: 0;
+
+	display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    flex-direction: row;
+
+    width: 100%
+	padding: 0 15px;
+
+	-webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+	-webkit-justify-content: space-between;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+}
+
 .okayNav {
 
 	&:not(.loaded) {
 		// Hide the links by default to avoid FOUC
 		visibility: hidden;
+
 		user-select: none;
 	}
 
@@ -32,10 +43,6 @@ body.okayNav-loaded {overflow-x: hidden}
 	}
 
 	a {
-		/* Links general styling */
-		color: @nav-links-color;
-		font-size: @nav-links-font-size;
-		font-weight: bold;
 		position: relative;
 		z-index: 1;
 	}
@@ -43,6 +50,7 @@ body.okayNav-loaded {overflow-x: hidden}
 
 .okayNav__nav--visible {
 	overflow: hidden;
+
 	white-space: nowrap;
 
 	li {display: inline-block;}
@@ -50,73 +58,87 @@ body.okayNav-loaded {overflow-x: hidden}
 	a {
 		/* Link styling for the visible part of the nav */
 		display: block;
-		transition: color @nav-transition-speed @nav-transition-curve;
-		padding: @nav-links-padding-y @nav-links-padding-x;
-		&:hover {color: @nav-links-hover-color;}
+
+		padding: @oknav-links-padding-y @oknav-links-padding-x;
+
+		transition: color @oknav-transition-speed @oknav-transition-curve;
 	}
 }
 
 /* Link styling for the off-screen part of the nav */
 .okayNav__nav--invisible {
 	position: fixed;
-	top: @header-height;
+	top: @oknav-header-height;
 	bottom: 0;
+
 	overflow-y: scroll;
 	-webkit-overflow-scrolling: touch;
-	background: @nav-invisible-background;
 
 	a {
-		background: #fff;
-		width: 240px;
 		display: block;
+
+		width: 240px;
 		padding: 15px;
+
+		background: #fff;
 	}
 
 	&.nav-left {
 		left: 0;
+
 		transform: translateX(-100%);
 	}
 	&.nav-right {
 		right: 0;
+
 		transform: translateX(100%);
 	}
-	&.transition-enabled {transition: transform 400ms @nav-transition-curve}
+	&.transition-enabled {transition: transform 400ms @oknav-transition-curve}
 	&.nav-open {transform: translateX(0)}
 }
 
 /* Kebab icon */
 .okayNav__menu-toggle {
 	position: relative;
-	transition: transform 400ms @nav-transition-curve;
-	cursor: pointer;
+	z-index: 1;
+	top: @oknav-links-padding-y;
+
+	float: left;
+
 	width: 40px;
 	height: 20px;
-	float: left;
-	z-index: 1;
-	top: @nav-links-padding-y;
+
+	cursor: pointer;
+	transition: transform 400ms @oknav-transition-curve;
 
 	&.okay-invisible {
 		position: absolute;
-		opacity: 0;
+
 		user-select: none;
 		pointer-events: none;
+
+		opacity: 0;
 	}
 
 	span {
-		display: block;
 		position: absolute;
-		margin: auto;
-		height: 4px;
-		width: 4px;
-		background: @nav-links-color;
-		border-radius: 50%;
-		left: 0;
 		right: 0;
+		left: 0;
+
+		display: block;
+
+		width: 4px;
+		height: 4px;
+		margin: auto;
+
 		pointer-events: none;
+
+		border-radius: 50%;
 
 		&:nth-child(1) {top: 0;}
 		&:nth-child(2) {
             top: 50%;
+
             transform: translateY(-50%);
         }
 		&:nth-child(3) {bottom: 0;}
@@ -124,7 +146,5 @@ body.okayNav-loaded {overflow-x: hidden}
 
 	&.icon--active { /* Kebab icon when off-screen nav is open */
 		transform: rotate(90deg);
-
-		span {background: @nav-links-hover-color}
 	}
 }

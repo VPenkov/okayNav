@@ -5,6 +5,24 @@
 body.okayNav-loaded {
   overflow-x: hidden;
 }
+.okayNav-header {
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding: 0 15px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
 .okayNav:not(.loaded) {
   visibility: hidden;
   -webkit-user-select: none;
@@ -17,10 +35,6 @@ body.okayNav-loaded {
   float: left;
 }
 .okayNav a {
-  /* Links general styling */
-  color: #2e2e33;
-  font-size: 1.4rem;
-  font-weight: bold;
   position: relative;
   z-index: 1;
 }
@@ -37,17 +51,13 @@ body.okayNav-loaded {
   transition: color 200ms cubic-bezier(0.55, 0, 0.1, 1);
   padding: 15px 15px;
 }
-.okayNav__nav--visible a:hover {
-  color: #546edb;
-}
 /* Link styling for the off-screen part of the nav */
 .okayNav__nav--invisible {
   position: fixed;
-  top: 70px;
+  top: 7rem;
   bottom: 0;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
-  background: #fff;
 }
 .okayNav__nav--invisible a {
   background: #fff;
@@ -102,7 +112,6 @@ body.okayNav-loaded {
   margin: auto;
   height: 4px;
   width: 4px;
-  background: #2e2e33;
   border-radius: 50%;
   left: 0;
   right: 0;
@@ -123,7 +132,4 @@ body.okayNav-loaded {
   /* Kebab icon when off-screen nav is open */
   -webkit-transform: rotate(90deg);
           transform: rotate(90deg);
-}
-.okayNav__menu-toggle.icon--active span {
-  background: #546edb;
 }

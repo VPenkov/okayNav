@@ -1,0 +1,31 @@
+@import "okayNav-vars.less";
+
+.okayNav-header {
+    height: @oknav-header-height;
+
+    background-color: @oknav-header-bg;
+}
+
+.okayNav {
+    a {
+        color: @oknav-links-color;
+
+        font-size: @oknav-links-font-size;
+        font-size: @oknav-links-font-size;
+		font-weight: @oknav-links-font-weight;
+        &:hover {color: @oknav-links-hover-color}
+    }
+}
+
+.okayNav__nav--visible {
+    a:hover {color: @oknav-links-hover-color;}
+}
+
+.okayNav__nav--invisible {
+    background: @oknav-invisible-background;
+}
+
+.okayNav__menu-toggle {
+    span {background: @oknav-kebab-color}
+    &.icon--active span {background: @oknav-kebab-active-color}
+}

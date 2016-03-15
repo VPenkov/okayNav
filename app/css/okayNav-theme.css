@@ -1,0 +1,24 @@
+.okayNav-header {
+  background-color: #fff;
+  height: 7rem;
+}
+.okayNav a {
+  color: #2e2e33;
+  font-weight: bold;
+  font-size: 1.4rem;
+}
+.okayNav a:hover {
+  color: #546edb;
+}
+.okayNav__nav--visible a:hover {
+  color: #546edb;
+}
+.okayNav__nav--invisible {
+  background: #fff;
+}
+.okayNav__menu-toggle span {
+  background: #2e2e33;
+}
+.okayNav__menu-toggle.icon--active span {
+  background: #546edb;
+}
