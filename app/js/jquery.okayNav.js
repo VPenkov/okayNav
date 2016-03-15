@@ -1,11 +1,29 @@
 /*!
- * jquery.okayNav.js 2.0.1 (https://github.com/VPenkov/okayNav)
+ * jquery.okayNav.js 2.0.2 (https://github.com/VPenkov/okayNav)
  * Author: Vergil Penkov (http://vergilpenkov.com/)
  * MIT license: https://opensource.org/licenses/MIT
  */
 
-;(function($, window, document, undefined) {
-
+;
+(function(factory) {
+    if (typeof define === 'function' && define.amd) {
+        define(['jquery'], factory); // AMD
+    } else if (typeof module === 'object' && module.exports) {
+        module.exports = function(root, jQuery) { // Node/CommonJS
+            if (jQuery === undefined) {
+                if (typeof window !== 'undefined') {
+                    jQuery = require('jquery');
+                } else {
+                    jQuery = require('jquery')(root);
+                }
+            }
+            factory(jQuery);
+            return jQuery;
+        };
+    } else {
+        factory(jQuery); // Browser globals
+    }
+}(function($) {
     // Defaults
     var okayNav = 'okayNav',
         defaults = {
@@ -111,7 +129,9 @@
                 }
             });
 
-            var optimizeResize = self._debounce(function(){self.recalcNav()}, _options.recalc_delay);
+            var optimizeResize = self._debounce(function() {
+                self.recalcNav()
+            }, _options.recalc_delay);
             $window.on('load.okayNav resize.okayNav', optimizeResize);
         },
 
@@ -126,8 +146,8 @@
                         if (
                             ((touch.pageX < 25 && self.options.align_right == false) ||
                                 (touch.pageX > ($(_options.parent).outerWidth(true) - 25) &&
-                                self.options.align_right == true)) ||
-                                _nav_visible === true) {
+                                    self.options.align_right == true)) ||
+                            _nav_visible === true) {
 
                             _sTouch.x = _cTouch.x = touch.pageX;
                             _sTouch.y = _cTouch.y = touch.pageY;
@@ -247,17 +267,18 @@
          */
         _debounce: function(func, wait, immediate) {
             var timeout;
-        	return function() {
-        		var context = this, args = arguments;
-        		var later = function() {
-        			timeout = null;
-        			if (!immediate) func.apply(context, args);
-        		};
-        		var callNow = immediate && !timeout;
-        		clearTimeout(timeout);
-        		timeout = setTimeout(later, wait);
-        		if (callNow) func.apply(context, args);
-        	};
+            return function() {
+                var context = this,
+                    args = arguments;
+                var later = function() {
+                    timeout = null;
+                    if (!immediate) func.apply(context, args);
+                };
+                var callNow = immediate && !timeout;
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+                if (callNow) func.apply(context, args);
+            };
         },
 
         openInvisibleNav: function() {
@@ -425,5 +446,4 @@
             return returns !== undefined ? returns : this;
         }
     };
-
-}(jQuery, window, document));
+}));
