@@ -111,6 +111,12 @@
 
             // Events are up once everything is set
             self.initEvents();
+
+            // Trim white spaces between visible nav elements
+            $nav_visible.contents().filter(function() {
+                return this.nodeType = Node.TEXT_NODE && /\S/.test(this.nodeValue) === false;
+            }).remove();
+
             if (_options.swipe_enabled == true) self.initSwipeEvents();
         },
 
@@ -370,6 +376,7 @@
             if (wrapper_width > expand_width + _toggle_icon_width + 15) {
                 self._expandNavItem();
             }
+
 
             // Hide the kebab icon if no items are hidden
             self.getHiddenItemCount() == 0 ?
