@@ -12,7 +12,9 @@
   },
   "keywords": [
     "responsive",
-    "navigation"
+    "navigation",
+    "jquery-plugin",
+    "ecosystem:jquery"
   ],
   "author": "Vergil Penkov (http://vergilpenkov.com/)",
   "license": "MIT",
