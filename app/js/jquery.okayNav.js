@@ -1,5 +1,5 @@
 /*!
- * jquery.okayNav.js 2.0.2 (https://github.com/VPenkov/okayNav)
+ * jquery.okayNav.js 2.0.3 (https://github.com/VPenkov/okayNav)
  * Author: Vergil Penkov (http://vergilpenkov.com/)
  * MIT license: https://opensource.org/licenses/MIT
  */
