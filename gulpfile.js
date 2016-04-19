@@ -32,7 +32,7 @@ gulp.task('useref', function(){
     .pipe(gulpIf('*.js', uglify({
         preserveComments: 'license'
     })))
-    .pipe(gulpIf('*.css', cssnano()))
+    .pipe(gulpIf('*.css', cssnano({autoprefixer: false})))
     .pipe(gulp.dest('dist'))
 });
 
