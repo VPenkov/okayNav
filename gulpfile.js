@@ -26,7 +26,7 @@ gulp.task('browserSync', function() {
   })
 });
 
-gulp.task('useref', function(){
+gulp.task('useref', ['less'], function(){
   return gulp.src('app/*.html')
     .pipe(useref())
     .pipe(gulpIf('*.js', uglify({
@@ -47,7 +47,7 @@ gulp.task('watch', ['browserSync', 'less'], function(){
 });
 
 gulp.task('build', ['clean:dist'], function (){
-  gulp.start('less', 'useref');
+  gulp.start('useref');
   console.log('Building files');
 });
 
