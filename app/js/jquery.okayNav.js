@@ -26,7 +26,8 @@
 }(function($) {
     // Defaults
 
-    var okayNav = 'okayNav',
+    var self,
+        okayNav = 'okayNav',
         defaults = {
             parent: '', // will call nav's parent() by default
             toggle_icon_class: 'okayNav__menu-toggle',
