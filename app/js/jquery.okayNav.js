@@ -26,8 +26,7 @@
 }(function($) {
     // Defaults
 
-    var self,
-        okayNav = 'okayNav',
+    var okayNav = 'okayNav',
         defaults = {
             parent: '', // will call nav's parent() by default
             toggle_icon_class: 'okayNav__menu-toggle',
@@ -46,9 +45,8 @@
 
     // Begin
     function Plugin(element, options) {
-        self = this;
+        var self = this;
         this.options = $.extend({}, defaults, options);
-        self.options = this.options;
 
         self.navigation = $(element);
         self.document = $(document);
@@ -78,9 +76,10 @@
         self.init();
     }
 
-    Plugin.prototype = {
+    $.extend(Plugin.prototype, {
 
         init: function() {
+            var self = this;
 
             $('body').addClass('okayNav-loaded');
 
@@ -122,6 +121,7 @@
         },
 
         initEvents: function() {
+            var self = this;
             // Toggle hidden nav when hamburger icon is clicked and
             // Collapse hidden nav on click outside the header
             self.document.on('click.okayNav', function(e) {
@@ -130,7 +130,7 @@
                 if (self.nav_open === true && _target.closest('.okayNav').length == 0)
                     self.closeInvisibleNav();
 
-                if (_target.hasClass(self.options.toggle_icon_class)) {
+                if (e.target === self.toggle_icon.get(0)) {
                     e.preventDefault();
                     self.toggleInvisibleNav();
                 }
@@ -138,11 +138,12 @@
 
             var optimizeResize = self._debounce(function() {
                 self.recalcNav()
-            }, self.options.recalc_delay);
+            }, self.options.resize_delay);
             self.window.on('load.okayNav resize.okayNav', optimizeResize);
         },
 
         initSwipeEvents: function() {
+            var self = this;
             self.document
                 .on('touchstart.okayNav', function(e) {
                     self.nav_invisible.removeClass('transition-enabled');
@@ -196,7 +197,7 @@
         },
 
         _getDirection: function(dx) {
-            if (self.options.align_right) {
+            if (this.options.align_right) {
                 return (dx > 0) ? -1 : 1;
             } else {
                 return (dx < 0) ? -1 : 1;
@@ -204,6 +205,8 @@
         },
 
         _triggerMove: function(x, y) {
+            var self = this;
+
             self.cTouch.x = x;
             self.cTouch.y = y;
 
@@ -254,19 +257,19 @@
          * A few methods to allow working with elements
          */
         getParent: function() {
-            return self.options.parent;
+            return this.options.parent;
         },
 
         getVisibleNav: function() { // Visible navigation
-            return self.nav_visible;
+            return this.nav_visible;
         },
 
         getInvisibleNav: function() { // Hidden behind the kebab icon
-            return self.nav_invisible;
+            return this.nav_invisible;
         },
 
         getNavToggleIcon: function() { // Kebab icon
-            return self.toggle_icon;
+            return this.toggle_icon;
         },
 
         /*
@@ -289,6 +292,8 @@
         },
 
         openInvisibleNav: function() {
+            var self = this;
+
             !self.options.enable_swipe ? self.options.beforeOpen.call() : '';
 
             self.toggle_icon.addClass('icon--active');
@@ -303,6 +308,7 @@
         },
 
         closeInvisibleNav: function() {
+            var self = this;
             !self.options.enable_swipe ? self.options.beforeClose.call() : '';
 
             self.toggle_icon.removeClass('icon--active');
@@ -325,6 +331,7 @@
         },
 
         toggleInvisibleNav: function() {
+            var self = this;
             if (!self.nav_open) {
                 self.openInvisibleNav();
             } else {
@@ -347,13 +354,14 @@
         },
 
         getVisibleItemCount: function() {
-            return $('li', self.nav_visible).length;
+            return $('li', this.nav_visible).length;
         },
         getHiddenItemCount: function() {
-            return $('li', self.nav_invisible).length;
+            return $('li', this.nav_invisible).length;
         },
 
         recalcNav: function() {
+            var self = this;
             var wrapper_width = $(self.options.parent).outerWidth(true),
                 space_taken = self.getChildrenWidth(self.options.parent),
                 nav_full_width = self.navigation.outerWidth(true),
@@ -386,6 +394,7 @@
         },
 
         _collapseNavItem: function() {
+            var self = this;
             var $last_child = $('li:last-child', self.nav_visible);
             self.last_visible_child_width = $last_child.outerWidth(true);
             self.document.trigger('okayNav:collapseItem', $last_child);
@@ -398,6 +407,7 @@
         },
 
         _expandNavItem: function() {
+            var self = this;
             var $first = $('li:first-child', self.nav_invisible);
             self.document.trigger('okayNav:expandItem', $first);
             $first.detach().appendTo(self.nav_visible);
@@ -405,16 +415,19 @@
         },
 
         _expandAllItems: function() {
+            var self = this;
             $('li', self.nav_invisible).detach().appendTo(self.nav_visible);
             self.options.itemDisplayed.call();
         },
 
         _collapseAllItems: function() {
+            var self = this;
             $('li', self.nav_visible).detach().appendTo(self.nav_invisible);
             self.options.itemHidden.call();
         },
 
         destroy: function() {
+            var self = this;
             $('li', self.nav_invisible).appendTo(self.nav_visible);
             self.nav_invisible.remove();
             self.nav_visible.removeClass('okayNav__nav--visible');
@@ -424,7 +437,7 @@
             self.window.unbind('.okayNav');
         }
 
-    }
+    });
 
     // Plugin wrapper
     $.fn[okayNav] = function(options) {
