@@ -2,7 +2,7 @@
   "name": "okaynav",
   "version": "2.0.3",
   "description": "Progressively responsive jQuery navigation",
-  "main": "index.js",
+  "main": "app/js/jquery.okayNav.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
