@@ -362,6 +362,8 @@
                 expand_width = space_taken + self.last_visible_child_width + self.toggle_icon_width,
                 expandAll_width = space_taken - nav_full_width + self.default_width;
 
+            self.default_width = self.getChildrenWidth(self.navigation);
+
             if (wrapper_width > expandAll_width) {
                 self._expandAllItems();
                 self.toggle_icon.addClass('okay-invisible');
