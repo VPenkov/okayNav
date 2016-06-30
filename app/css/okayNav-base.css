@@ -8,18 +8,15 @@ body.okayNav-loaded {
 .okayNav-header {
   position: fixed;
   top: 0;
-  display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
   flex-direction: row;
   width: 100%;
   padding: 0 15px;
-  -webkit-align-items: center;
   -ms-flex-align: center;
   align-items: center;
   -webkit-flex-direction: row;
   -ms-flex-direction: row;
-  -webkit-justify-content: space-between;
   -ms-flex-pack: justify;
   justify-content: space-between;
 }
@@ -30,11 +27,11 @@ body.okayNav-loaded {
       -ms-user-select: none;
           user-select: none;
 }
-.okayNav ul {
+.okayNav > ul {
   /* We want two navigations - one hidden and one visible */
   float: left;
 }
-.okayNav a {
+.okayNav > ul > li > a {
   position: relative;
   z-index: 1;
 }
@@ -42,10 +39,10 @@ body.okayNav-loaded {
   overflow: hidden;
   white-space: nowrap;
 }
-.okayNav__nav--visible li {
+.okayNav__nav--visible > li {
   display: inline-block;
 }
-.okayNav__nav--visible a {
+.okayNav__nav--visible > li > a {
   /* Link styling for the visible part of the nav */
   display: block;
   padding: 15px 15px;
@@ -62,7 +59,7 @@ body.okayNav-loaded {
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
 }
-.okayNav__nav--invisible a {
+.okayNav__nav--invisible > li > a {
   display: block;
   width: 240px;
   padding: 15px;
@@ -70,22 +67,17 @@ body.okayNav-loaded {
 }
 .okayNav__nav--invisible.nav-left {
   left: 0;
-  -webkit-transform: translateX(-100%);
-          transform: translateX(-100%);
+  transform: translateX(-100%);
 }
 .okayNav__nav--invisible.nav-right {
   right: 0;
-  -webkit-transform: translateX(100%);
-          transform: translateX(100%);
+  transform: translateX(100%);
 }
 .okayNav__nav--invisible.transition-enabled {
-  transition: -webkit-transform 400ms cubic-bezier(0.55, 0, 0.1, 1);
   transition: transform 400ms cubic-bezier(0.55, 0, 0.1, 1);
-  transition: transform 400ms cubic-bezier(0.55, 0, 0.1, 1), -webkit-transform 400ms cubic-bezier(0.55, 0, 0.1, 1);
 }
 .okayNav__nav--invisible.nav-open {
-  -webkit-transform: translateX(0);
-          transform: translateX(0);
+  transform: translateX(0);
 }
 /* Kebab icon */
 .okayNav__menu-toggle {
@@ -96,9 +88,7 @@ body.okayNav-loaded {
   width: 40px;
   height: 20px;
   cursor: pointer;
-  transition: -webkit-transform 400ms cubic-bezier(0.55, 0, 0.1, 1);
   transition: transform 400ms cubic-bezier(0.55, 0, 0.1, 1);
-  transition: transform 400ms cubic-bezier(0.55, 0, 0.1, 1), -webkit-transform 400ms cubic-bezier(0.55, 0, 0.1, 1);
 }
 .okayNav__menu-toggle.okay-invisible {
   position: absolute;
@@ -125,14 +115,12 @@ body.okayNav-loaded {
 }
 .okayNav__menu-toggle span:nth-child(2) {
   top: 50%;
-  -webkit-transform: translateY(-50%);
-          transform: translateY(-50%);
+  transform: translateY(-50%);
 }
 .okayNav__menu-toggle span:nth-child(3) {
   bottom: 0;
 }
 .okayNav__menu-toggle.icon--active {
   /* Kebab icon when off-screen nav is open */
-  -webkit-transform: rotate(90deg);
-          transform: rotate(90deg);
+  transform: rotate(90deg);
 }

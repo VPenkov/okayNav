@@ -37,15 +37,21 @@ body.okayNav-loaded {overflow-x: hidden}
 		user-select: none;
 	}
 
-	ul {
-		/* We want two navigations - one hidden and one visible */
-		float: left
-	}
+  >ul {
+    /* We want two navigations - one hidden and one visible */
+    float: left;
 
-	a {
-		position: relative;
-		z-index: 1;
-	}
+    >li {
+
+      >a {
+        position: relative;
+        z-index: 1;
+      }
+
+    }
+
+  }
+
 }
 
 .okayNav__nav--visible {
@@ -53,16 +59,18 @@ body.okayNav-loaded {overflow-x: hidden}
 
 	white-space: nowrap;
 
-	li {display: inline-block;}
+  >li {
+    display: inline-block;
 
-	a {
-		/* Link styling for the visible part of the nav */
-		display: block;
+    >a {
+      /* Link styling for the visible part of the nav */
+      display: block;
 
-		padding: @oknav-links-padding-y @oknav-links-padding-x;
+      padding: @oknav-links-padding-y @oknav-links-padding-x;
 
-		transition: color @oknav-transition-speed @oknav-transition-curve;
-	}
+      transition: color @oknav-transition-speed @oknav-transition-curve;
+    }
+  }
 
     &:empty {
         & ~ .okayNav__menu-toggle {top: 0}
@@ -78,14 +86,16 @@ body.okayNav-loaded {overflow-x: hidden}
 	overflow-y: scroll;
 	-webkit-overflow-scrolling: touch;
 
-	a {
-		display: block;
+  >li {
+    >a {
+      display: block;
 
-		width: 240px;
-		padding: 15px;
+      width: 240px;
+      padding: 15px;
 
-		background: #fff;
-	}
+      background: #fff;
+    }
+  }
 
 	&.nav-left {
 		left: 0;
