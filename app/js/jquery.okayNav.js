@@ -347,10 +347,10 @@
         },
 
         getVisibleItemCount: function() {
-            return $('li', self.nav_visible).length;
+            return $('> li', self.nav_visible).length;
         },
         getHiddenItemCount: function() {
-            return $('li', self.nav_invisible).length;
+            return $('> li', self.nav_invisible).length;
         },
 
         recalcNav: function() {
@@ -386,7 +386,7 @@
         },
 
         _collapseNavItem: function() {
-            var $last_child = $('li:last-child', self.nav_visible);
+            var $last_child = $('> li:last-child', self.nav_visible);
             self.last_visible_child_width = $last_child.outerWidth(true);
             self.document.trigger('okayNav:collapseItem', $last_child);
             $last_child.detach().prependTo(self.nav_invisible);
@@ -398,24 +398,24 @@
         },
 
         _expandNavItem: function() {
-            var $first = $('li:first-child', self.nav_invisible);
+            var $first = $('> li:first-child', self.nav_invisible);
             self.document.trigger('okayNav:expandItem', $first);
             $first.detach().appendTo(self.nav_visible);
             self.options.itemDisplayed.call();
         },
 
         _expandAllItems: function() {
-            $('li', self.nav_invisible).detach().appendTo(self.nav_visible);
+            $('> li', self.nav_invisible).detach().appendTo(self.nav_visible);
             self.options.itemDisplayed.call();
         },
 
         _collapseAllItems: function() {
-            $('li', self.nav_visible).detach().appendTo(self.nav_invisible);
+            $('> li', self.nav_visible).detach().appendTo(self.nav_invisible);
             self.options.itemHidden.call();
         },
 
         destroy: function() {
-            $('li', self.nav_invisible).appendTo(self.nav_visible);
+            $('> li', self.nav_invisible).appendTo(self.nav_visible);
             self.nav_invisible.remove();
             self.nav_visible.removeClass('okayNav__nav--visible');
             self.toggle_icon.remove();
