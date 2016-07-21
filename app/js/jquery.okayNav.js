@@ -210,7 +210,6 @@
             self.cTouch.x = x;
             self.cTouch.y = y;
 
-            var currentTime = Date.now();
             var dx = (self.cTouch.x - self.sTouch.x);
             var dy = (self.cTouch.y - self.sTouch.y);
 
@@ -220,7 +219,6 @@
             var dOpposing = Math.sqrt(opposing);
 
             var angle = Math.asin(Math.sin(dOpposing / distance)) * self.radCoef;
-            var speed = distance / (currentTime - self.sTime);
 
             //Set new start position
             self.sTouch.x = x;
