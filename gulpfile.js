@@ -46,7 +46,7 @@ Gulp.task('build:css', function() {
         .pipe(Sass().on('error', Sass.logError))
         .pipe(Autoprefixer(autoPrefixOptions))
         .pipe(Sourcemaps.write())
-        .pipe(Gulp.dest(`${folders.dist.css}//**/*.scss`))
+        .pipe(Gulp.dest(folders.dist.css))
         .pipe(reload({stream: true}));
 });
 
@@ -64,8 +64,15 @@ Gulp.task('build:js', function() {
             .pipe(buffer())
             .pipe(Sourcemaps.init({loadMaps: true}))
             .pipe(Sourcemaps.write('.'))
-            .pipe(Gulp.dest(`${folders.dist.js}`))
+            .pipe(Gulp.dest(folders.dist.js))
             .pipe(reload({stream: true}));
+    };
+});
+
+Gulp.task('build:html', function() {
+    return function() {
+        Gulp.src(`${folders.dev.base}/*.html`)
+            .pipe(Gulp.dest(folders.dist.base));
     };
 });
 
