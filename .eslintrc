@@ -1,0 +1,84 @@
+{
+    "env": {
+        "browser": 1,
+        "jquery": 1,
+        "commonjs": 1,
+        "es6": 1,
+        "node": 1
+    },
+    "ecmaFeatures": {
+      "modules": true
+    },
+    "rules": {
+        "brace-style": ["error", "1tbs"],
+        "one-var": "off",
+        "space-before-blocks": ["error", "always"],
+        "space-before-function-paren": "off",
+        "object-curly-spacing": "off",
+        "comma-dangle": "off",
+        "semi": [2, "always"],
+        "indent": ["error", 4],
+        "no-dupe-keys": "error",
+        "no-duplicate-case": "error",
+        "no-empty": "error",
+        "no-func-assign": "error",
+        "no-sparse-arrays": "error",
+        "no-unexpected-multiline": "error",
+        "valid-typeof": "error",
+        "block-scoped-var": "error",
+        "curly": "error",
+        "dot-notation": "error",
+        "eqeqeq": "error",
+        "no-empty-pattern": "error",
+        "no-eval": "error",
+        "no-fallthrough": "error",
+        "no-floating-decimal": "error",
+        "no-lone-blocks": "error",
+        "no-multi-spaces": "error",
+        "no-native-reassign": "error",
+        "no-param-reassign": "error",
+        "no-redeclare": "error",
+        "no-script-url": "error",
+        "no-self-assign": "error",
+        "no-self-compare": "error",
+        "no-sequences": "error",
+        "no-useless-concat": "error",
+        "strict": ["error", "global"],
+        "no-catch-shadow": "error",
+        "no-shadow": "error",
+        "no-undef-init": "error",
+        "no-undef": "error",
+        "no-unused-vars": "error",
+        "global-require": "error",
+        "array-bracket-spacing": ["error", "never"],
+        "comma-style": ["error", "last"],
+        "computed-property-spacing": ["error", "never"],
+        "consistent-this": ["error", "self"],
+        "eol-last": "error",
+        "key-spacing": ["error", {
+            "beforeColon": false,
+            "afterColon": true
+        }],
+        "keyword-spacing": ["error", {
+            "before": true,
+            "after": true
+        }],
+        "no-irregular-whitespace": ["error", {
+            "skipComments": true,
+            "skipRegExps": true,
+            "skipTemplates": true
+        }],
+        "padded-blocks": ["error", {
+            "blocks": "never",
+            "switches": "never",
+            "classes": "never"
+        }],
+        "comma-spacing": ["error", {
+            "before": false,
+            "after": true
+        }],
+        "lines-around-comment": ["error", {
+            "beforeBlockComment": true
+        }]
+    }
+}
