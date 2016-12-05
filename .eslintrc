@@ -1,13 +1,16 @@
 {
     "env": {
-        "browser": 1,
-        "jquery": 1,
-        "commonjs": 1,
-        "es6": 1,
-        "node": 1
+        "browser": true,
+        "jquery": true,
+        "commonjs": true,
+        "es6": true,
+        "node": true
     },
     "ecmaFeatures": {
       "modules": true
+    },
+    "parserOptions": {
+        "sourceType": "module"
     },
     "rules": {
         "brace-style": ["error", "1tbs"],

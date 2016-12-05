@@ -1,17 +1,15 @@
 'use strict';
 
 var Autoprefixer = require('gulp-autoprefixer');
-var Browserify = require('browserify');
 var BrowserSync = require('browser-sync');
-var buffer = require('buffer');
 var Eslint = require('eslint');
 var Gulp = require('gulp');
 var Header = require('gulp-header');
 var PackageInfo = require('./package.json');
-var plumber = require('plumber');
 var Sass = require('gulp-sass');
 var Sourcemaps = require('gulp-sourcemaps');
 var Stylelint = require('stylelint');
+var Useref = require('gulp-useref');
 
 var autoPrefixOptions = {
     browsers: [
@@ -23,14 +21,14 @@ var autoPrefixOptions = {
 
 var folders = {
     dev: {
-        base: 'app',
-        css: 'app/scss',
-        js: 'app/js'
+        base: './app',
+        css: './app/scss',
+        js: './app/js'
     },
     dist: {
-        base: 'dist',
-        css: 'dist/css',
-        js: 'dist/js'
+        base: './dist',
+        css: './dist/css',
+        js: './dist/js'
     }
 };
 
@@ -50,28 +48,19 @@ Gulp.task('build:css', function() {
         .pipe(Sourcemaps.init())
         .pipe(Sass().on('error', Sass.logError))
         .pipe(Autoprefixer(autoPrefixOptions))
-        .pipe(Header(creditsBanner, { package : PackageInfo }))
+        .pipe(Header(creditsBanner, { package: PackageInfo }))
         .pipe(Sourcemaps.write())
         .pipe(Gulp.dest(folders.dist.css));
 });
 
 Gulp.task('build:js', function() {
-    var APP_SOURCE = 'okayNav.js';
+    // `${folders.dev.js}/okayNav.js`
+    // folders.dist.js
 
-    var okayNav = Browserify({
-        entries: `${folders.dev.js}/${APP_SOURCE}`
-    });
-
-    return function() {
-        okayNav.bundle()
-            .pipe(source(APP_SOURCE))
-            .pipe(plumber())
-            .pipe(buffer())
-            .pipe(Header(creditsBanner, { package: PackageInfo }))
-            .pipe(Sourcemaps.init({loadMaps: true}))
-            .pipe(Sourcemaps.write(folders.dist.js))
-            .pipe(Gulp.dest(folders.dist.js));
-    };
+    return Gulp
+        .src(`${folders.dev.js}/okayNav.js`)
+        .pipe(Useref())
+        .pipe(Gulp.dest(folders.dist.js));
 });
 
 Gulp.task('build:html', function() {

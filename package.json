@@ -20,7 +20,6 @@
   "homepage": "https://github.com/VPenkov/okayNav#readme",
   "devDependencies": {
     "browser-sync": "*",
-    "browserify": "*",
     "chai": "*",
     "del": "*",
     "eslint": "*",
@@ -35,8 +34,8 @@
     "gulp-sourcemaps": "*",
     "gulp-stylelint": "*",
     "gulp-uglify": "*",
+    "gulp-useref": "^3.1.2",
     "mocha": "*",
-    "plumber": "*",
     "sinon": "*",
     "stylelint": "*"
   }
