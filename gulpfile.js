@@ -6,23 +6,19 @@ var BrowserSync = require('browser-sync');
 var buffer = require('buffer');
 var Eslint = require('eslint');
 var Gulp = require('gulp');
-var Plumber = require('plumber');
+var Header = require('gulp-header');
+var PackageInfo = require('./package.json');
+var plumber = require('plumber');
 var Sass = require('gulp-sass');
 var Sourcemaps = require('gulp-sourcemaps');
 var Stylelint = require('stylelint');
 
-var reload = BrowserSync.reload;
 var autoPrefixOptions = {
     browsers: [
         '> 1%',
         'last 2 versions',
         'Firefox ESR'
     ]
-};
-
-var cssNanoSettings = {
-    safe: true,
-    autoprefixer: false // done before minification
 };
 
 var folders = {
@@ -38,16 +34,25 @@ var folders = {
     }
 };
 
+var creditsBanner = [
+    '/**!\n' +
+    ' * okayNav <%= package.version %>\n' +
+    ' * @see <%= package.homepage %>\n' +
+    ' * @author <%= package.author %>\n' +
+    ' * @copyright ' + new Date().getFullYear() + '. <%= package.license %> licensed.\n' +
+    ' */',
+    '\n'
+].join('');
+
 Gulp.task('build:css', function() {
     return Gulp
         .src(`${folders.dev.css}/**/*.scss`)
-        .pipe(Plumber())
         .pipe(Sourcemaps.init())
         .pipe(Sass().on('error', Sass.logError))
         .pipe(Autoprefixer(autoPrefixOptions))
+        .pipe(Header(creditsBanner, { package : PackageInfo }))
         .pipe(Sourcemaps.write())
-        .pipe(Gulp.dest(folders.dist.css))
-        .pipe(reload({stream: true}));
+        .pipe(Gulp.dest(folders.dist.css));
 });
 
 Gulp.task('build:js', function() {
@@ -60,12 +65,12 @@ Gulp.task('build:js', function() {
     return function() {
         okayNav.bundle()
             .pipe(source(APP_SOURCE))
-            .pipe(Plumber())
+            .pipe(plumber())
             .pipe(buffer())
+            .pipe(Header(creditsBanner, { package: PackageInfo }))
             .pipe(Sourcemaps.init({loadMaps: true}))
-            .pipe(Sourcemaps.write('.'))
-            .pipe(Gulp.dest(folders.dist.js))
-            .pipe(reload({stream: true}));
+            .pipe(Sourcemaps.write(folders.dist.js))
+            .pipe(Gulp.dest(folders.dist.js));
     };
 });
 
@@ -91,9 +96,29 @@ Gulp.task('lint:css', function() {
 Gulp.task('lint:js', function() {
     return function() {
         Gulp.src(`${folders.dev.js}/**/*.js`)
-            .pipe(reload({stream: true, once: true}))
             .pipe(Eslint())
             .pipe(Eslint.format())
             .pipe(Gulp.dest(`${folders.dev.js}`));
     };
+});
+
+Gulp.task('dev', ['build:js', 'build:css', 'build:html'], function() {
+    BrowserSync({
+        notify: false,
+        port: 9000,
+        server: {
+            baseDir: [folders.dev.base]
+        },
+        ui: false
+    });
+
+    Gulp.watch([
+        `${folders.dev.base}/*.html`,
+        `${folders.dev.css}/**/*`,
+        `${folders.dev.js}/**/*`
+    ]).on('change', BrowserSync.reload);
+
+    Gulp.watch(`${folders.dev.base}/*.html`, ['build:html']);
+    Gulp.watch(`${folders.dev.css}/**/*.scss`, ['build:css']);
+    Gulp.watch(`${folders.dev.js}/**/*.js`, ['build:js']);
 });
