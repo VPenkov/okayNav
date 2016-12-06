@@ -39,7 +39,6 @@
         "no-lone-blocks": "error",
         "no-multi-spaces": "error",
         "no-native-reassign": "error",
-        "no-param-reassign": "error",
         "no-redeclare": "error",
         "no-script-url": "error",
         "no-self-assign": "error",

@@ -1,5 +1,3 @@
-'use strict';
-
 var Autoprefixer = require('gulp-autoprefixer');
 var BrowserSync = require('browser-sync');
 var Eslint = require('eslint');
@@ -43,8 +41,7 @@ var creditsBanner = [
 ].join('');
 
 Gulp.task('build:css', function() {
-    return Gulp
-        .src(`${folders.dev.css}/**/*.scss`)
+    return Gulp.src(`${folders.dev.css}/**/*.scss`)
         .pipe(Sourcemaps.init())
         .pipe(Sass().on('error', Sass.logError))
         .pipe(Autoprefixer(autoPrefixOptions))
@@ -54,20 +51,14 @@ Gulp.task('build:css', function() {
 });
 
 Gulp.task('build:js', function() {
-    // `${folders.dev.js}/okayNav.js`
-    // folders.dist.js
-
-    return Gulp
-        .src(`${folders.dev.js}/okayNav.js`)
+    return Gulp.src(`${folders.dev.js}/okayNav.js`)
         .pipe(Useref())
         .pipe(Gulp.dest(folders.dist.js));
 });
 
 Gulp.task('build:html', function() {
-    return function() {
-        Gulp.src(`${folders.dev.base}/*.html`)
-            .pipe(Gulp.dest(folders.dist.base));
-    };
+    return Gulp.src(`${folders.dev.base}/*.html`)
+        .pipe(Gulp.dest(folders.dist.base));
 });
 
 Gulp.task('lint:css', function() {
@@ -96,7 +87,8 @@ Gulp.task('dev', ['build:js', 'build:css', 'build:html'], function() {
         notify: false,
         port: 9000,
         server: {
-            baseDir: [folders.dev.base]
+            baseDir: [folders.dist.base],
+            index: 'demo-unstyled.html'
         },
         ui: false
     });

@@ -4,36 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>okayNav Demo</title>
+    <title>Demo</title>
 
     <link href="http://fonts.googleapis.com/css?family=Roboto:700,400&subset=latin" rel="stylesheet" type="text/css">
 
-    <link rel="stylesheet" href="css/okayNav-base.css" media="screen">
-    <link rel="stylesheet" href="css/okayNav-theme.css" media="screen">
+    <link rel="stylesheet" href="css/reset.css" media="screen">
+    <link rel="stylesheet" href="css/theme-unstyled.css" media="screen">
 </head>
 <body>
 
     <header id="header" class="okayNav-header">
-        <a class="site-logo" href="#">
-           Logo
+        <a class="okayNav-header__logo" href="#">
+           TEST
         </a>
 
-        <nav role="navigation" class="okayNav">
+        <nav role="navigation" id="nav-main" class="okayNav">
             <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Shop</a></li>
-                <li><a href="#">Blog</a></li>
-                <li><a href="#">Services</a></li>
-                <li><a href="#">Contacts</a></li>
-                <li><a href="#">About us</a></li>
-                <li><a href="#">Testimonials</a></li>
+                <li data-priority="1" class="okayNav__item"><a href="#">Nav Item 1</a></li>
+                <li data-priority="2" class="okayNav__item"><a href="#">Nav Item 2</a></li>
+                <li data-priority="4" class="okayNav__item"><a href="#">Nav Item 3</a></li>
+                <li data-priority="3" class="okayNav__item"><a href="#">Nav Item 4</a></li>
+                <li data-priority="4" class="okayNav__item"><a href="#">Nav Item 5</a></li>
+                <li data-priority="4" class="okayNav__item"><a href="#">Nav Item 6</a></li>
+                <li data-priority="4" class="okayNav__item"><a href="#">Nav Item 7</a></li>
             </ul>
         </nav>
     </header>
 
     <main>
-        <h1>Resize your browser to preview okayNav</h1>
+        <h1></h1>
     </main>
+
+    <script src="js/okayNav.js"></script>
+    <script>
+        var okaynav = new Plugin('#nav-main');
+    </script>
 
 </body>
 </html>

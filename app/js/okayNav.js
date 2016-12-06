@@ -1,7 +1,10 @@
 ;function Plugin(target, options) {
+    // Accept a class or a DOM node as argument
+    this.navigation = (typeof target === 'object' && 'nodeType' in target) ? target : document.querySelector(target);
+
     // Override the default options with the user options
     var defaultOptions = this._getDefaults();
-    this.options = Object.assign(defaultOptions, options);
+    this.options = this._extend(defaultOptions, options);
 
     /**
      * priority.visible is for the visible part of the navigation
@@ -14,12 +17,41 @@
         invisible: []
     };
 
-    // Accept a class or a DOM node as argument
-    this.navigation = (typeof target === 'object' && 'nodeType' in target) ? target : document.querySelector(target);
+    this.breakpoints = [];
 
     // Fire!
     this._init();
 }
+
+/**
+ * If does not support Object.assign, use a for() loop
+ * @param {Object} - target object to merge into
+ * @param {Object} - source object to merge from
+ */
+Plugin.prototype._extend = function(target, varArgs) {
+    if (typeof Object.assign === 'function') {
+        Object.assign(target, varArgs);
+        return; // exit early
+    }
+
+    if (!target) {
+        throw new TypeError('Cannot convert undefined or null to object');
+    }
+
+    var to = Object(target);
+    for (var index = 1; index < arguments.length; index++) {
+        var nextSource = arguments[index];
+
+        if (nextSource !== null || nextSource !== undefined) { // Skip over if undefined or null and not if false
+            for (var nextKey in nextSource) {
+                if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+                    to[nextKey] = nextSource[nextKey];
+                }
+            }
+        }
+    }
+    return to;
+};
 
 /**
  * This method allows caches the selector we are getting so that
@@ -83,7 +115,6 @@ Plugin.prototype._cleanWhitespace = function() {
 
 /**
  * Get an highest number from array
- *
  * @param {Array} array - the array
  */
 Plugin.prototype._arrayMax = function(array) {
@@ -101,7 +132,7 @@ Plugin.prototype._arrayMin = function(array) {
 Plugin.prototype._getDefaults = function() {
     return {
         align_right: true, // If false, the menu and the kebab icon will be on the left
-        parent: this.parentNode, // will target nav's parent by default
+        parent: this.navigation.parentNode, // will target nav's parent by default
         priority: true, // Enable/disable prioritization of items
         resize_delay: 10, // When resizing the window, 123456 can throttle its recalculations if enabled. Setting this to 50-250 will improve performance but make 123456 less accurate.
         swipe_enabled: true, // If true, you'll be able to swipe left/right to open the navigation
@@ -146,7 +177,7 @@ Plugin.prototype._attachNodes = function() {
  * Currently only used for caching link priorities.
  */
 Plugin.prototype._initLinkProperties = function() {
-    var navItems = this.navVisible.querySelectorAll('a');
+    var navItems = this.navVisible.querySelectorAll('li');
 
     for (var item in navItems) {
         this._savePriority(navItems[item]);
@@ -175,33 +206,123 @@ Plugin.prototype._savePriority = function(element, visible) {
 };
 
 /**
- * Gets the highest priority item either from the visible
- * or from the invisible part of the navigation.
- *
- * @param {Boolean} visible
- * @returns {Number}
+ * Caches the width of the wrapper when the last actionable method
+ * has been called. Must be called before moving an item to the invisible part
  */
-Plugin.prototype.getMostImportant = function(visible) {
-    var getFrom = function(element) {
-        element.querySelector('a[data-priority=' + this._arrayMax(this.priority.visible) + ']');
-    };
+Plugin.prototype.cacheFirstItemWidth = function() {
+    
+};
 
-    return visible ? getFrom(this.navVisible) : getFrom(this.navInvisible);
+Plugin.prototype._cacheLastBreakpoint = function() {
+    this.breakpoints.push(this.getWrapperWidth());
 };
 
 /**
- * Gets the lowest priority item either from the visible
+ * Get the width of an element's children.
+ * @param {Object} element - DOM node
+ */
+Plugin.prototype.getChildrenWidth = function(element) {
+    var totalWidth = 0;
+    var children = element.children;
+
+    for (var child in children) {
+        totalWidth = totalWidth + children[child].offsetWidth;
+    }
+
+    return totalWidth;
+};
+
+/**
+ * Get the width of the navVisible's parent
+ * @returns {Number} - the total width
+ */
+Plugin.prototype.getWrapperWidth = function() {
+    var parent = this.options.parent;
+    return parent.offsetWidth;
+};
+
+/**
+ * Get the width of the visible nav
+ * @returns {Number} - the total width
+ */
+Plugin.prototype.getNavWidth = function() {
+    return this.navVisible.offsetWidth;
+};
+
+/**
+ * Get the width of the nav's siblings.
+ * We cannot subtract the navWidth from wrapperWidth because the nav
+ * might not have flex: 1 so it might not take the full available space.
+ */
+Plugin.prototype.getNavSiblingsWidth = function() {
+    var parent = this.options.parent;
+    var navWidth = this.getNavWidth();
+    var wrapperChildrenWidth = this.getChildrenWidth(parent);
+    var siblingsWidth = wrapperChildrenWidth - navWidth;
+
+    return siblingsWidth;
+};
+
+/**
+ * Calculates the available free space and returns the desired action
+ * 'expand', false or 'collapse'
+ *
+ * @returns {String} expand|false|collapse
+ */
+Plugin.prototype._getAction = function() {
+    var bufferSpace = 40;
+    var parentWidth = this.getWrapperWidth();
+    var navWidth = this.getNavWidth();
+    var navSiblingsWidth = this.getNavSiblingsWidth();
+    var navItemsWidth = this.navItemsWidth || this.getNavItemsWidth(true);
+    var availableSpace = parentWidth - navWidth - navSiblingsWidth;
+
+    if (availableSpace <= (navSiblingsWidth + navItemsWidth + bufferSpace)) {
+        // If available space is smaller than (navSiblingsWidth + navWidth + bufferSpace), shrink
+        return 'collapse';
+    } else if (availableSpace > navWidth + this.firstItemWidth) {
+        // If available space is bigger than (navWidth + cacheFirstItemWidth), expand
+        return 'expand';
+    } else {
+        // Do nothing
+        return false;
+    }
+};
+
+// Plugin.prototype. = function() {};
+
+/**
+ * We need this method because the visible nav must not overflow.
+ * Therefore, the navItems' total width could be greater than their parent's.
+ *
+ * @param {Boolean} cache - if true, it would cache the result to this.navItemsWidth
+ */
+Plugin.prototype.getNavItemsWidth = function(cache) {
+    var totalWidth = this.getChildrenWidth(this.navVisible);
+
+    if (cache) {
+        this.navItemsWidth = totalWidth;
+    }
+
+    return totalWidth;
+};
+
+/**
+ * Gets the highest or lowest-priority item either from the visible
  * or from the invisible part of the navigation.
  *
+ * @param {Boolean} important - true for important, false for unimportant
  * @param {Boolean} visible
  * @returns {Number}
  */
-Plugin.prototype.getLeastImportant = function(visible) {
+Plugin.prototype.getItemByPriority = function(important, visible) {
+    var target = important ? this._arrayMax(this.priority.visible) : this._arrayMin(this.priority.visible);
+
     var getFrom = function(element) {
-        element.querySelector('a[data-priority=' + this._arrayMin(this.priority.visible) + ']');
+        return element.querySelector('li[data-priority=' + target + ']');
     };
 
-    visible ? getFrom(this.navVisible) : getFrom(this.navInvisible);
+    return visible ? getFrom(this.navVisible) : getFrom(this.navInvisible);
 };
 
 /**
@@ -219,19 +340,42 @@ Plugin.prototype._moveItemTo = function(element, visible) {
     visible ? moveTo(this.navVisible) : moveTo(this.navInvisible);
 };
 
+/**
+ * Hide the least important item from the visible part.
+ * If items have the same priority, it will hide the first DOM match.
+ */
 Plugin.prototype._collapseNavItem = function() {
-    var nextToCollapse = this.getLeastImportant(true);
+    // Get least important visible item
+    var nextToCollapse = this.getItemByPriority(false, true);
     this._moveItemTo(nextToCollapse, false);
 };
 
+/**
+ * Restore the most important item from the invisible part.
+ * If items have the same priority, it will hide the first DOM match.
+ */
 Plugin.prototype._expandNavItem = function() {
-    var nextToCollapse = this.getMostImportant();
+    // Get least important invisible item
+    var nextToCollapse = this.getItemByPriority(true);
     this._moveItemTo(nextToCollapse, false);
 };
 
-Plugin.prototype._collapseAllItems = function() {};
+/**
+ * Recursive function. It will call itself as long as an action is necessary
+ * @returns {Boolean} - true if it should be called again, false otherwise
+ */
+Plugin.prototype.recalcNav = function() {
+    var action = this.getAction();
 
-Plugin.prototype._expandAllItems = function() {};
+    if (action === 'collapse') {
+        this._cacheLastBreakpoint();
+        this._collapseNavItem();
+    } else if (action === 'expand') {
+        this._expandNavItem();
+    } else {
+        return;
+    }
 
-
-// Plugin.prototype. = function() {};
+    this.recalcNav();
+    return true;
+};

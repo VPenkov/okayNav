@@ -10,7 +10,6 @@
     "color-no-invalid-hex": true,
     "declaration-colon-space-after": "always",
     "declaration-colon-space-before": "never",
-    "declaration-block-no-duplicate-properties": true,
     "declaration-block-no-ignored-properties": true,
     "declaration-block-no-shorthand-property-overrides": true,
     "declaration-block-properties-order": "alphabetical",
