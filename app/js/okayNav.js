@@ -98,42 +98,6 @@ Plugin.prototype._arrayMin = function(array) {
     return Math.min.apply(Math, array);
 };
 
-/**
- * Gets the highest priority item either from the visible
- * or from the invisible part of the navigation.
- *
- * @param {Boolean} visible
- * @returns {Number}
- */
-Plugin.prototype.getMostImportant = function(visible) {
-    var getFrom = function(element) {
-        element.querySelector('a[data-priority=' + this._arrayMax(this.priority.visible) + ']');
-    };
-
-    return visible ? getFrom(this.navVisible) : getFrom(this.navInvisible);
-};
-
-/**
- * Gets the lowest priority item either from the visible
- * or from the invisible part of the navigation.
- *
- * @param {Boolean} visible
- * @returns {Number}
- */
-Plugin.prototype.getLeastImportant = function(visible) {
-    var getFrom = function(element) {
-        element.querySelector('a[data-priority=' + this._arrayMin(this.priority.visible) + ']');
-    };
-
-    return visible ? getFrom(this.navVisible) : getFrom(this.navInvisible);
-};
-
-Plugin.prototype._init = function() {
-    this._attachNodes();
-    this._cleanWhitespace();
-    this._initLinks();
-};
-
 Plugin.prototype._getDefaults = function() {
     return {
         align_right: true, // If false, the menu and the kebab icon will be on the left
@@ -153,15 +117,14 @@ Plugin.prototype._getDefaults = function() {
     };
 };
 
-Plugin.prototype._collapseNavItem = function() {
-    var nextToCollapse = this.getLeastImportant()
+/**
+ * Initializing starting sequence
+ */
+Plugin.prototype._init = function() {
+    this._attachNodes();
+    this._cleanWhitespace();
+    this._initLinkProperties();
 };
-
-Plugin.prototype._expandNavItem = function() {};
-
-Plugin.prototype._collapseAllItems = function() {};
-
-Plugin.prototype._expandAllItems = function() {};
 
 /**
  * Create the invisible part of the navigation and set the classes
@@ -180,8 +143,9 @@ Plugin.prototype._attachNodes = function() {
 /**
  * Run one big loop for all nav items during initialization.
  * Initial bulk routines run here to avoid performance hiccups.
+ * Currently only used for caching link priorities.
  */
-Plugin.prototype._initLinks = function() {
+Plugin.prototype._initLinkProperties = function() {
     var navItems = this.navVisible.querySelectorAll('a');
 
     for (var item in navItems) {
@@ -209,5 +173,65 @@ Plugin.prototype._savePriority = function(element, visible) {
         this.priority.invisible.push(priority);
     }
 };
+
+/**
+ * Gets the highest priority item either from the visible
+ * or from the invisible part of the navigation.
+ *
+ * @param {Boolean} visible
+ * @returns {Number}
+ */
+Plugin.prototype.getMostImportant = function(visible) {
+    var getFrom = function(element) {
+        element.querySelector('a[data-priority=' + this._arrayMax(this.priority.visible) + ']');
+    };
+
+    return visible ? getFrom(this.navVisible) : getFrom(this.navInvisible);
+};
+
+/**
+ * Gets the lowest priority item either from the visible
+ * or from the invisible part of the navigation.
+ *
+ * @param {Boolean} visible
+ * @returns {Number}
+ */
+Plugin.prototype.getLeastImportant = function(visible) {
+    var getFrom = function(element) {
+        element.querySelector('a[data-priority=' + this._arrayMin(this.priority.visible) + ']');
+    };
+
+    visible ? getFrom(this.navVisible) : getFrom(this.navInvisible);
+};
+
+/**
+ * Move an item from the invisible to the visible part of the
+ * navigation or vice versa.
+ *
+ * @param {Object} element - DOM node
+ * @param {Boolean} visible - if true, move to visible; else move to invisible
+ */
+Plugin.prototype._moveItemTo = function(element, visible) {
+    var moveTo = function(navPart) {
+        navPart.appendChild(element);
+    };
+
+    visible ? moveTo(this.navVisible) : moveTo(this.navInvisible);
+};
+
+Plugin.prototype._collapseNavItem = function() {
+    var nextToCollapse = this.getLeastImportant(true);
+    this._moveItemTo(nextToCollapse, false);
+};
+
+Plugin.prototype._expandNavItem = function() {
+    var nextToCollapse = this.getMostImportant();
+    this._moveItemTo(nextToCollapse, false);
+};
+
+Plugin.prototype._collapseAllItems = function() {};
+
+Plugin.prototype._expandAllItems = function() {};
+
 
 // Plugin.prototype. = function() {};
