@@ -1,13 +1,14 @@
-var Autoprefixer = require('gulp-autoprefixer');
-var BrowserSync = require('browser-sync');
-var Eslint = require('eslint');
-var Gulp = require('gulp');
-var Header = require('gulp-header');
-var PackageInfo = require('./package.json');
-var Sass = require('gulp-sass');
-var Sourcemaps = require('gulp-sourcemaps');
-var Stylelint = require('stylelint');
-var Useref = require('gulp-useref');
+var autoprefixer = require('gulp-autoprefixer');
+var browserSync = require('browser-sync');
+var eslint = require('eslint');
+var gulp = require('gulp');
+var header = require('gulp-header');
+var packageInfo = require('./package.json');
+var sass = require('gulp-sass');
+var sourcemaps = require('gulp-sourcemaps');
+var stylelint = require('stylelint');
+var uglify = require('gulp-uglify');
+var pump = require('pump');
 
 var autoPrefixOptions = {
     browsers: [
@@ -31,7 +32,7 @@ var folders = {
 };
 
 var creditsBanner = [
-    '/**!\n' +
+    '/*!\n' +
     ' * okayNav <%= package.version %>\n' +
     ' * @see <%= package.homepage %>\n' +
     ' * @author <%= package.author %>\n' +
@@ -40,31 +41,34 @@ var creditsBanner = [
     '\n'
 ].join('');
 
-Gulp.task('build:css', function() {
-    return Gulp.src(`${folders.dev.css}/**/*.scss`)
-        .pipe(Sourcemaps.init())
-        .pipe(Sass().on('error', Sass.logError))
-        .pipe(Autoprefixer(autoPrefixOptions))
-        .pipe(Header(creditsBanner, { package: PackageInfo }))
-        .pipe(Sourcemaps.write())
-        .pipe(Gulp.dest(folders.dist.css));
+gulp.task('build:css', function() {
+    return gulp.src(`${folders.dev.css}/**/*.scss`)
+        .pipe(sourcemaps.init())
+        .pipe(sass().on('error', sass.logError))
+        .pipe(autoprefixer(autoPrefixOptions))
+        .pipe(header(creditsBanner, { package: packageInfo }))
+        .pipe(sourcemaps.write())
+        .pipe(gulp.dest(folders.dist.css));
 });
 
-Gulp.task('build:js', function() {
-    return Gulp.src(`${folders.dev.js}/okayNav.js`)
-        .pipe(Useref())
-        .pipe(Gulp.dest(folders.dist.js));
+gulp.task('build:js', function(done) {
+    pump([
+        gulp.src(`${folders.dev.js}/okayNav.js`),
+        uglify({preserveComments: 'license'}),
+        header(creditsBanner, { package: packageInfo }),
+        gulp.dest(folders.dist.js)
+    ], done);
 });
 
-Gulp.task('build:html', function() {
-    return Gulp.src(`${folders.dev.base}/*.html`)
-        .pipe(Gulp.dest(folders.dist.base));
+gulp.task('build:html', function() {
+    return gulp.src(`${folders.dev.base}/*.html`)
+        .pipe(gulp.dest(folders.dist.base));
 });
 
-Gulp.task('lint:css', function() {
-    return Gulp
+gulp.task('lint:css', function() {
+    return gulp
         .src(`${folders.dev.css}/**/*.scss`)
-        .pipe(Stylelint({
+        .pipe(stylelint({
             syntax: "scss",
             reporters: [{
                 formatter: 'string',
@@ -73,17 +77,17 @@ Gulp.task('lint:css', function() {
         }));
 });
 
-Gulp.task('lint:js', function() {
+gulp.task('lint:js', function() {
     return function() {
-        Gulp.src(`${folders.dev.js}/**/*.js`)
-            .pipe(Eslint())
-            .pipe(Eslint.format())
-            .pipe(Gulp.dest(`${folders.dev.js}`));
+        gulp.src(`${folders.dev.js}/**/*.js`)
+            .pipe(eslint())
+            .pipe(eslint.format())
+            .pipe(gulp.dest(`${folders.dev.js}`));
     };
 });
 
-Gulp.task('dev', ['build:js', 'build:css', 'build:html'], function() {
-    BrowserSync({
+gulp.task('dev', ['build:js', 'build:css', 'build:html'], function() {
+    browserSync({
         notify: false,
         port: 9000,
         server: {
@@ -93,13 +97,13 @@ Gulp.task('dev', ['build:js', 'build:css', 'build:html'], function() {
         ui: false
     });
 
-    Gulp.watch([
+    gulp.watch([
         `${folders.dev.base}/*.html`,
         `${folders.dev.css}/**/*`,
         `${folders.dev.js}/**/*`
-    ]).on('change', BrowserSync.reload);
+    ]).on('change', browserSync.reload);
 
-    Gulp.watch(`${folders.dev.base}/*.html`, ['build:html']);
-    Gulp.watch(`${folders.dev.css}/**/*.scss`, ['build:css']);
-    Gulp.watch(`${folders.dev.js}/**/*.js`, ['build:js']);
+    gulp.watch(`${folders.dev.base}/*.html`, ['build:html']);
+    gulp.watch(`${folders.dev.css}/**/*.scss`, ['build:css']);
+    gulp.watch(`${folders.dev.js}/**/*.js`, ['build:js']);
 });
