@@ -47,7 +47,8 @@ OkayNav.prototype = {
             resize_delay: 10, // When resizing the window, okayNav can throttle its recalculations if enabled. Setting this to 50-250 will improve performance but make okayNav less accurate.
             swipe_enabled: true, // If true, you'll be able to swipe left/right to open the navigation
             threshold: 50, // Nav will auto open/close if swiped >= this many percent
-            toggle_icon_class: 'okayNav__menu-toggle',
+            toggle_icon_class: 'okayNav__menu-toggle', // classname of the toggle button
+            toggle_icon_parent_class: 'okayNav__item', // classname of the <li> wrapping the toggle butotn
             toggle_icon_content: '<svg viewBox="0 0 100 100"><title>Navigation</title><g><circle cx="51" cy="17.75" r="10.75"></circle><circle cx="51" cy="50" r="10.75"></circle><circle cx="51" cy="82.25" r="10.75"></circle></g></svg>',
             afterClose: function() {}, // Will trigger after the nav gets closed
             afterOpen: function() {}, // Will trigger after the nav gets opened
@@ -76,14 +77,14 @@ OkayNav.prototype = {
             return Object.assign;
         }
 
-        return function (target) {
+        return function(target) {
             if (target === null || target === undefined) {
                 target = {};
             }
 
             target = Object(target);
-            for (var index = 1; index < arguments.length; index++) {
-                var source = arguments[index];
+            for (var i = 1; i < arguments.length; i++) {
+                var source = arguments[i];
                 if (source !== null) {
                     for (var key in source) {
                         if (Object.prototype.hasOwnProperty.call(source, key)) {
@@ -196,10 +197,12 @@ OkayNav.prototype = {
      * @returns {Object} - DOM node containing the toggle button
      */
     _createToggleButton: function() {
-        var toggleButtonWrapper = document.createElement('li');
         var toggleButton = document.createElement('button');
         toggleButton.classList.add(this.options.toggle_icon_class);
         toggleButton.innerHTML = this.options.toggle_icon_content;
+
+        var toggleButtonWrapper = document.createElement('li');
+        toggleButtonWrapper.classList.add(this.options.toggle_icon_parent_class);
         toggleButtonWrapper.appendChild(toggleButton);
 
         return toggleButtonWrapper;
@@ -209,14 +212,14 @@ OkayNav.prototype = {
      * Attach window events
      */
     _attachEvents: function() {
-        window.addEventListener('resize', this.getWindowResizeEvent);
+        window.addEventListener('resize', this.getWindowResizeEvent.bind(this));
     },
 
     /**
      * Actions which need to occur on resize
      */
     getWindowResizeEvent: function() {
-        this._debounceCall(this.recalcNav, this.options.resize_delay);
+        this._debounceCall(this.recalcNav(), this.options.resize_delay);
     },
 
     /**
@@ -337,6 +340,7 @@ OkayNav.prototype = {
      * @returns {String} expand|false|collapse
      */
     _getAction: function() {
+        var action;
         var bufferSpace = this.options.threshold; // "Safety offset"
         var parentWidth = this.getWrapperWidth();
         var wrapperChildrenWidth = this.getWrapperChildrenWidth();
@@ -345,14 +349,16 @@ OkayNav.prototype = {
 
         if (availableSpace <= 0) {
             // If available space is not enough, shrink
-            return 'collapse';
+            action = 'collapse';
         } else if (parentWidth > expandAt) {
             // If available space is bigger than the last breakpoint we've shrinked at, expand
-            return 'expand';
+            action = 'expand';
         } else {
             // Do nothing
-            return false;
+            action = false;
         }
+
+        return action;
     },
 
     /**
@@ -436,7 +442,7 @@ OkayNav.prototype = {
      * Recursive function. It will call itself as long as an action is necessary
      */
     recalcNav: function() {
-        var action = this.getAction();
+        var action = this._getAction();
 
         if (action === 'collapse') {
             this._collapseNavItem();
