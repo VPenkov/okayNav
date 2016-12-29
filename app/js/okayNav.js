@@ -29,7 +29,13 @@
         invisible: []
     };
 
-    this.breakpoints = [];
+    /**
+     * Right before hiding a nav item, okayNav will cache its width
+     * in this array in order to determine when it should be expanded
+     * if the viewport gets expanded. We cache it here because we want
+     * to know before its style gets changed when moved.
+     */
+    this.itemWidths = [];
 
     // Fire!
     this._init();
@@ -203,6 +209,7 @@ OkayNav.prototype = {
 
         var toggleButtonWrapper = document.createElement('li');
         toggleButtonWrapper.classList.add(this.options.toggle_icon_parent_class);
+        toggleButtonWrapper.dataset.priority = 9999;
         toggleButtonWrapper.appendChild(toggleButton);
 
         return toggleButtonWrapper;
@@ -231,7 +238,7 @@ OkayNav.prototype = {
         var navItems = this.navVisible.querySelectorAll('li');
 
         for (var item in navItems) {
-            this._savePriority(navItems[item]);
+            this._savePriority(navItems[item], true);
         }
     },
 
@@ -247,38 +254,13 @@ OkayNav.prototype = {
             return;
         }
 
-        var priority = element.dataset.priority || 1;
+        var priority = element.getAttribute('data-priority') || 1;
 
         if (visible) {
             this.priority.visible.push(priority);
         } else {
             this.priority.invisible.push(priority);
         }
-    },
-
-    /**
-     * Caches the width of the wrapper when the last actionable method
-     * has been called. Must be called before moving an item to the invisible part
-     */
-    _cacheLastBreakpoint: function() {
-        this.breakpoints.push(this.getWrapperWidth());
-    },
-
-    /**
-     * Returns the last breakpoint
-     * @returns {Number} - the last breakpoint
-     */
-    _getLastBreakpoint: function() {
-        var totalBreakpoints = this.breakpoints.length;
-
-        return this.breakpoints[totalBreakpoints];
-    },
-
-    /**
-     * @TODO
-     */
-    _removeLastBreakpoint: function() {
-        this.breakpoints.pop();
     },
 
     /**
@@ -289,8 +271,8 @@ OkayNav.prototype = {
         var totalWidth = 0;
         var children = element.children;
 
-        for (var child in children) {
-            totalWidth = totalWidth + children[child].offsetWidth;
+        for (var i in children) {
+            totalWidth += children[i].offsetWidth || 0;
         }
 
         return totalWidth;
@@ -313,21 +295,6 @@ OkayNav.prototype = {
         return this.navVisible.offsetWidth;
     },
 
-    /**
-     * Get the width of the navigation's siblings.
-     * We cannot subtract the navWidth from wrapperWidth because the nav
-     * might not have flex: 1 so it might not take the full available space.
-     * @TODO
-     */
-    getNavSiblingsWidth: function() {
-        var parent = this.options.parent;
-        var navWidth = this.getNavWidth();
-        var wrapperChildrenWidth = this.getChildrenWidth(parent);
-        var siblingsWidth = wrapperChildrenWidth - navWidth;
-
-        return siblingsWidth;
-    },
-
     getWrapperChildrenWidth: function() {
         return this.getChildrenWidth(this.options.parent);
     },
@@ -335,7 +302,6 @@ OkayNav.prototype = {
     /**
      * Calculates the available free space and returns the desired action
      * 'expand', false or 'collapse'
-     * @TODO
      *
      * @returns {String} expand|false|collapse
      */
@@ -344,8 +310,8 @@ OkayNav.prototype = {
         var bufferSpace = this.options.threshold; // "Safety offset"
         var parentWidth = this.getWrapperWidth();
         var wrapperChildrenWidth = this.getWrapperChildrenWidth();
-        var expandAt = this._getLastBreakpoint();
         var availableSpace = parentWidth - wrapperChildrenWidth - bufferSpace;
+        var expandAt = availableSpace + this.itemWidths[0];
 
         if (availableSpace <= 0) {
             // If available space is not enough, shrink
@@ -362,23 +328,6 @@ OkayNav.prototype = {
     },
 
     /**
-     * We need this method because the visible nav must not overflow.
-     * Therefore, the navItems' total width could be greater than their parent's.
-     * @TODO
-     *
-     * @param {Boolean} cache - if true, it would cache the result to this.navItemsWidth
-     */
-    getNavItemsWidth: function(cache) {
-        var totalWidth = this.getChildrenWidth(this.navVisible);
-
-        if (cache) {
-            this.navItemsWidth = totalWidth;
-        }
-
-        return totalWidth;
-    },
-
-    /**
      * Gets the highest or lowest-priority item either from the visible
      * or from the invisible part of the navigation.
      *
@@ -390,7 +339,7 @@ OkayNav.prototype = {
         var target = important ? this._arrayMax(this.priority.visible) : this._arrayMin(this.priority.visible);
 
         var getFrom = function(element) {
-            return element.querySelector('li[data-priority=' + target + ']');
+            return element.querySelector('li[data-priority="' + target + '"]');
         };
 
         return visible ? getFrom(this.navVisible) : getFrom(this.navInvisible);
@@ -416,9 +365,19 @@ OkayNav.prototype = {
      * If items have the same priority, it will hide the first DOM match.
      */
     _collapseNavItem: function() {
-        this._cacheLastBreakpoint();
         // Get least important visible item
         var nextToCollapse = this.getItemByPriority(false, true);
+
+        // Save it to the invisible list
+        this._savePriority(nextToCollapse, false);
+
+        // Remove it from the visible list
+        this.priority.visible.shift();
+
+        // MCache its width
+        this.itemWidths.push(nextToCollapse.scrollWidth);
+
+        // Move the item
         this._moveItemTo(nextToCollapse, false);
 
         // callback
@@ -433,6 +392,7 @@ OkayNav.prototype = {
         // Get least important invisible item
         var nextToCollapse = this.getItemByPriority(true, false);
         this._moveItemTo(nextToCollapse, true);
+        this.itemWidths.pop();
 
         // callback
         this.options.itemDisplayed.call();
