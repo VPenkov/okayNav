@@ -269,7 +269,7 @@ OkayNav.prototype = {
      */
     getChildrenWidth: function(element) {
         var totalWidth = 0;
-        var children = element.children;
+        var children = element.childNodes;
 
         for (var i in children) {
             totalWidth += children[i].offsetWidth || 0;
@@ -336,12 +336,15 @@ OkayNav.prototype = {
      * @returns {Number}
      */
     getItemByPriority: function(important, visible) {
-        var target = important ? this._arrayMax(this.priority.visible) : this._arrayMin(this.priority.visible);
-
         var getFrom = function(element) {
             return element.querySelector('li[data-priority="' + target + '"]');
         };
 
+        // First determine the importance (important/unimportant)
+        var target = important ? this._arrayMax(target) : this._arrayMin(target);
+
+        // Then determine the target array (visible/invisible)
+        // and return the result of the query
         return visible ? getFrom(this.navVisible) : getFrom(this.navInvisible);
     },
 

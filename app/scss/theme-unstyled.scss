@@ -6,6 +6,11 @@
     display: flex;
 }
 
+.okayNav {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
 .okayNav__item {
     display: inline-block;
 }
