@@ -104,25 +104,6 @@ OkayNav.prototype = {
     },
 
     /**
-     * This method allows caches the selector we are getting so that
-     * document.querySelector is not called twice for the same element.
-     *
-     * @param {String} selector - the selector you want to retrieve
-     * @returns {function} - getter
-     */
-    _getNode: function(selector) {
-        var cachedNode = null;
-
-        return function getTargetNode() {
-            if (!cachedNode) {
-                cachedNode = document.querySelector(selector);
-            }
-
-            return cachedNode;
-        };
-    },
-
-    /**
      * Allows us to enforce timeouts between method calls
      * to avoid calling them too often and decrease performance
      * @TODO
@@ -132,7 +113,7 @@ OkayNav.prototype = {
      * @param {Boolean} immediate - call immediately or not
      * @see {@link http://underscorejs.org/#debounce}
      */
-    _debounceCall: function(fn, wait, immediate) {
+    _debounce: function(fn, wait, immediate) {
         var timeout;
 
         return function() {
@@ -226,7 +207,7 @@ OkayNav.prototype = {
      * Actions which need to occur on resize
      */
     getWindowResizeEvent: function() {
-        this._debounceCall(this.recalcNav(), this.options.resize_delay);
+        this._debounce(this.recalcNav(), this.options.resize_delay);
     },
 
     /**
@@ -235,10 +216,10 @@ OkayNav.prototype = {
      * Currently only used for caching link priorities.
      */
     _initLinkProperties: function() {
-        var navItems = this.navVisible.querySelectorAll('li');
+        var navItems = this.navVisible.children;
 
-        for (var item in navItems) {
-            this._savePriority(navItems[item], true);
+        for (var i = 0; i < navItems.length; i++) {
+            this._savePriority(navItems[i], true);
         }
     },
 
@@ -250,17 +231,10 @@ OkayNav.prototype = {
      * @param {Boolean} visible - save to the visible or invisible list
      */
     _savePriority: function(element, visible) {
-        if (!element.dataset) {
-            return;
-        }
+        var itemPriority = element.getAttribute('data-priority') || 1;
+        var priorityList = visible ? 'visible' : 'invisible';
 
-        var priority = element.getAttribute('data-priority') || 1;
-
-        if (visible) {
-            this.priority.visible.push(priority);
-        } else {
-            this.priority.invisible.push(priority);
-        }
+        this.priority[priorityList].push(itemPriority);
     },
 
     /**
@@ -269,9 +243,9 @@ OkayNav.prototype = {
      */
     getChildrenWidth: function(element) {
         var totalWidth = 0;
-        var children = element.childNodes;
+        var children = element.children;
 
-        for (var i in children) {
+        for (var i = 0; i < children.length; i++) {
             totalWidth += children[i].offsetWidth || 0;
         }
 
@@ -284,6 +258,7 @@ OkayNav.prototype = {
      */
     getWrapperWidth: function() {
         var parent = this.options.parent;
+
         return parent.offsetWidth;
     },
 
@@ -336,16 +311,13 @@ OkayNav.prototype = {
      * @returns {Number}
      */
     getItemByPriority: function(important, visible) {
-        var getFrom = function(element) {
-            return element.querySelector('li[data-priority="' + target + '"]');
-        };
+        var targetNav = visible ? this.navVisible : this.navInvisible;
+        var targetArray = visible ? this.priority.visible : this.priority.invisible;
+        var priority = important ? this._arrayMax(targetArray) : this._arrayMin(targetArray);
 
-        // First determine the importance (important/unimportant)
-        var target = important ? this._arrayMax(target) : this._arrayMin(target);
+        var item = targetNav.querySelector('li[data-priority="' + priority + '"]');
 
-        // Then determine the target array (visible/invisible)
-        // and return the result of the query
-        return visible ? getFrom(this.navVisible) : getFrom(this.navInvisible);
+        return item;
     },
 
     /**
@@ -356,11 +328,9 @@ OkayNav.prototype = {
      * @param {Boolean} visible - if true, move to visible; else move to invisible
      */
     _moveItemTo: function(element, visible) {
-        var moveTo = function(navPart) {
-            navPart.appendChild(element);
-        };
+        var targetNav = visible ? this.navVisible : this.navInvisible;
 
-        visible ? moveTo(this.navVisible) : moveTo(this.navInvisible);
+        targetNav.appendChild(element);
     },
 
     /**
