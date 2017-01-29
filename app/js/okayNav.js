@@ -77,9 +77,9 @@ OkayNav.prototype = {
      */
     _debounce: function(fn, wait, immediate) {
         var timeout;
+        var self = this;
 
         return function() {
-            var self = this;
             var args = arguments;
 
             var later = function() {
@@ -162,14 +162,13 @@ OkayNav.prototype = {
      * Attach window events
      */
     _attachEvents: function() {
-        window.addEventListener('resize', this.getWindowResizeEvent.bind(this));
-    },
+        var events = ['load', 'resize'];
 
-    /**
-     * Actions which need to occur on resize
-     */
-    getWindowResizeEvent: function() {
-        this._debounce(this.recalcNav(), this.options.resize_delay);
+        for (var i = 0; i < events.length; i++) {
+            window.addEventListener(events[i],
+                this._debounce(this.recalcNav, this.options.resize_delay)
+            );
+        }
     },
 
     /**
