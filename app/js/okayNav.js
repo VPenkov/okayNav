@@ -69,7 +69,6 @@ OkayNav.prototype = {
     /**
      * Allows us to enforce timeouts between method calls
      * to avoid calling them too often and decrease performance
-     * @TODO
      *
      * @param {Function} fn - the function we would like to call
      * @param {Number} wait - the timeout in milliseconds
