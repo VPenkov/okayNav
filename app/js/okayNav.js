@@ -9,14 +9,27 @@
  * });
  */
 ;function OkayNav(target, options) {
-    // Polyfill Object.assign if necessary
-    this._objectAssign();
-
     // Accept a class or a DOM node as argument
     this.navigation = (typeof target === 'object' && 'nodeType' in target) ? target : document.querySelector(target);
 
     // Override the default options with the user options
-    this.options = Object.assign(this._getDefaults(), options);
+    options = options || {};
+    this.options = {
+        align_right: options.align_right || true, // If false, the menu and the kebab icon will be on the left
+        parent: options.parent || this.navigation.parentNode, // will target nav's parent by default
+        resize_delay: options.resize_delay || 10, // When resizing the window, okayNav can throttle its recalculations if enabled. Setting this to 50-250 will improve performance but make okayNav less accurate.
+        swipe_enabled: options.swipe_enabled || true, // If true, you'll be able to swipe left/right to open the navigation
+        threshold: options.threshold || 50, // Nav will auto open/close if swiped >= this many percent
+        toggle_icon_class: options.toggle_icon_class || 'okayNav__menu-toggle', // classname of the toggle button
+        toggle_icon_parent_class: options.toggle_icon_parent_class || 'okayNav__item', // classname of the <li> wrapping the toggle butotn
+        toggle_icon_content: options.toggle_icon_content || '<svg viewBox="0 0 100 100"><title>Navigation</title><g><circle cx="51" cy="17.75" r="10.75"></circle><circle cx="51" cy="50" r="10.75"></circle><circle cx="51" cy="82.25" r="10.75"></circle></g></svg>',
+        afterClose: options.afterClose || function() {}, // Will trigger after the nav gets closed
+        afterOpen: options.afterOpen || function() {}, // Will trigger after the nav gets opened
+        beforeClose: options.beforeClose || function() {}, // Will trigger before the nav gets closed
+        beforeOpen: options.beforeOpen || function() {}, // Will trigger before the nav gets opened
+        itemDisplayed: options.itemDisplayed || function() {},
+        itemHidden: options.itemHidden || function() {}
+    };
 
     /**
      * priority.visible is for the visible part of the navigation
@@ -44,28 +57,6 @@
 OkayNav.prototype = {
 
     /**
-     * Returns the default options for okayNav
-     */
-    _getDefaults: function() {
-        return {
-            align_right: true, // If false, the menu and the kebab icon will be on the left
-            parent: this.navigation.parentNode, // will target nav's parent by default
-            resize_delay: 10, // When resizing the window, okayNav can throttle its recalculations if enabled. Setting this to 50-250 will improve performance but make okayNav less accurate.
-            swipe_enabled: true, // If true, you'll be able to swipe left/right to open the navigation
-            threshold: 50, // Nav will auto open/close if swiped >= this many percent
-            toggle_icon_class: 'okayNav__menu-toggle', // classname of the toggle button
-            toggle_icon_parent_class: 'okayNav__item', // classname of the <li> wrapping the toggle butotn
-            toggle_icon_content: '<svg viewBox="0 0 100 100"><title>Navigation</title><g><circle cx="51" cy="17.75" r="10.75"></circle><circle cx="51" cy="50" r="10.75"></circle><circle cx="51" cy="82.25" r="10.75"></circle></g></svg>',
-            afterClose: function() {}, // Will trigger after the nav gets closed
-            afterOpen: function() {}, // Will trigger after the nav gets opened
-            beforeClose: function() {}, // Will trigger before the nav gets closed
-            beforeOpen: function() {}, // Will trigger before the nav gets opened
-            itemDisplayed: function() {},
-            itemHidden: function() {}
-        };
-    },
-
-    /**
      * Initialization method
      */
     _init: function() {
@@ -73,34 +64,6 @@ OkayNav.prototype = {
         this._cleanWhitespace();
         this._initLinkProperties();
         this._attachEvents();
-    },
-
-    /**
-     * If the browser does not support Object.assign, use a for() loop
-     */
-    _objectAssign: function() {
-        if (Object.assign !== undefined) {
-            return Object.assign;
-        }
-
-        return function(target) {
-            if (target === null || target === undefined) {
-                target = {};
-            }
-
-            target = Object(target);
-            for (var i = 1; i < arguments.length; i++) {
-                var source = arguments[i];
-                if (source !== null) {
-                    for (var key in source) {
-                        if (Object.prototype.hasOwnProperty.call(source, key)) {
-                            target[key] = source[key];
-                        }
-                    }
-                }
-            }
-            return target;
-        };
     },
 
     /**
