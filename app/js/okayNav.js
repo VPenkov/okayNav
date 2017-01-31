@@ -301,6 +301,7 @@ OkayNav.prototype = {
     _collapseNavItem: function() {
         // Get least important visible item
         var nextToCollapse = this.getItemByPriority(false, true);
+        console.log(nextToCollapse);
 
         // Save it to the invisible list
         this._savePriority(nextToCollapse, false);
@@ -308,7 +309,7 @@ OkayNav.prototype = {
         // Remove it from the visible list
         this.priority.visible.shift();
 
-        // MCache its width
+        // Cache its width
         this.itemWidths.push(nextToCollapse.scrollWidth);
 
         // Move the item
