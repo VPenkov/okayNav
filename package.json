@@ -29,17 +29,17 @@
     "gulp-cssnano": "*",
     "gulp-eslint": "*",
     "gulp-header": "*",
-    "gulp-mocha": "*",
+    "gulp-mocha": "^3.0.1",
     "gulp-sass": "*",
     "gulp-sourcemaps": "*",
     "gulp-stylelint": "*",
     "gulp-uglify": "^2.0.0",
+    "jsdom": "^9.9.1",
     "jsdom-global": "^2.1.1",
     "mocha": "^3.2.0",
     "pump": "^1.0.1",
     "rollup": "^0.37.0",
-    "sinon": "*",
-    "sinon-chai": "^2.8.0",
+    "sinon": "^1.17.7",
     "stylelint": "*"
   }
 }

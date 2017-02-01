@@ -3,6 +3,7 @@ var browserSync = require('browser-sync');
 var eslint = require('eslint');
 var gulp = require('gulp');
 var header = require('gulp-header');
+var mocha = require('gulp-mocha');
 var packageInfo = require('./package.json');
 var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
@@ -19,10 +20,13 @@ var autoPrefixOptions = {
 };
 
 var folders = {
+    test: {
+        base: './test'
+    },
     dev: {
         base: './app',
         css: './app/scss',
-        js: './app/js'
+        js: './app/js',
     },
     dist: {
         base: './dist',
@@ -78,12 +82,22 @@ gulp.task('lint:css', function() {
 });
 
 gulp.task('lint:js', function() {
-    return function() {
-        gulp.src(`${folders.dev.js}/**/*.js`)
-            .pipe(eslint())
-            .pipe(eslint.format())
-            .pipe(gulp.dest(`${folders.dev.js}`));
-    };
+    return gulp.src(`${folders.dev.js}/**/*.js`)
+        .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(gulp.dest(`${folders.dev.js}`));
+});
+
+gulp.task('test', function() {
+    function handleError(err) {
+        console.log(err.toString());
+        this.emit('end');
+    }
+
+    return gulp
+        .src([`${folders.test.base}/**/*.js`], {read: false})
+        .pipe(mocha({reporter: 'spec'}))
+        .on('error', handleError);
 });
 
 gulp.task('dev', ['build:js', 'build:css', 'build:html'], function() {
