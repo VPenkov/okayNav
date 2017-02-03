@@ -152,7 +152,7 @@ OkayNav.prototype = {
 
         var toggleButtonWrapper = document.createElement('li');
         toggleButtonWrapper.classList.add(this.options.toggle_icon_parent_class);
-        toggleButtonWrapper.dataset.priority = 9999;
+        toggleButtonWrapper.setAttribute('data-priority', 9999);
         toggleButtonWrapper.appendChild(toggleButton);
 
         return toggleButtonWrapper;
@@ -352,3 +352,5 @@ OkayNav.prototype = {
         this.recalcNav();
     }
 };
+
+module.exports = OkayNav;
