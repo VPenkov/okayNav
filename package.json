@@ -39,6 +39,7 @@
     "mocha": "^3.2.0",
     "pump": "^1.0.1",
     "rollup": "^0.37.0",
+    "simulant": "^0.2.2",
     "sinon": "^1.17.7",
     "stylelint": "*"
   }

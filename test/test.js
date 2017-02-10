@@ -1,7 +1,9 @@
+require('jsdom-global')();
+
 var chai = require('chai');
 var expect = chai.expect;
 var sinon = require('sinon');
-var jsdom = require('jsdom-global');
+var simulant = require('simulant');
 var OkayNav = require('../app/js/okayNav');
 
 var markup = '<header id="header" class="okayNav-header">' +
@@ -18,13 +20,13 @@ var markup = '<header id="header" class="okayNav-header">' +
 
 describe('okayNav', function() {
     var okayNavInstance;
+    var windowEvents;
     var sandbox;
-
-    jsdom();
 
     beforeEach(function() {
         sandbox = sinon.sandbox.create();
         document.body.innerHTML = markup;
+        windowEvents = sandbox.spy(window, 'addEventListener');
         okayNavInstance = new OkayNav('#nav-main');
     });
 
@@ -72,10 +74,43 @@ describe('okayNav', function() {
 
         it('should create the invisible nav', function() {
             // arrange
-            var navInisible = document.querySelectorAll('.okayNav__nav--invisible');
+            var navInvisible = document.querySelectorAll('.okayNav__nav--invisible');
 
             // assert
-            expect(navInisible.length).to.equal(1);
+            expect(navInvisible.length).to.equal(1);
+        });
+    });
+
+    describe('_createToggleButton', function() {
+        it('should create the close button', function() {
+            // arrange
+            var navInvisible = document.querySelectorAll('.okayNav__menu-toggle');
+
+            // assert
+            expect(navInvisible.length).to.equal(1);
+        });
+    });
+
+    describe('_attachEvents', function() {
+        it('should listen to the load event', function() {
+            // assert
+            expect(windowEvents.withArgs('load')).to.be.calledOnce;
+        });
+
+        it('should listen to the resize event', function() {
+            // assert
+            expect(windowEvents.withArgs('resize')).to.be.calledOnce;
+        });
+
+        it('should utilize the debounce script', function() {
+            // arrange
+            var spy = sandbox.spy(okayNavInstance, '_debounce');
+
+            // act
+            simulant.fire(window, 'scroll');
+
+            // assert
+            expect(spy).to.be.calledOnce;
         });
     });
 });
