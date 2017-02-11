@@ -4,12 +4,16 @@ var eslint = require('eslint');
 var gulp = require('gulp');
 var header = require('gulp-header');
 var mocha = require('gulp-mocha');
-var packageInfo = require('./package.json');
 var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
 var stylelint = require('stylelint');
 var uglify = require('gulp-uglify');
-var pump = require('pump');
+var source = require('vinyl-source-stream');
+var buffer = require('vinyl-buffer');
+var babelify = require('babelify');
+var browserify = require('browserify');
+
+var packageInfo = require('./package.json');
 
 var autoPrefixOptions = {
     browsers: [
@@ -55,13 +59,17 @@ gulp.task('build:css', () => {
         .pipe(gulp.dest(folders.dist.css));
 });
 
-gulp.task('build:js', (done) => {
-    pump([
-        gulp.src(`${folders.dev.js}/okayNav.js`),
-        uglify({preserveComments: 'license'}),
-        header(creditsBanner, { package: packageInfo }),
-        gulp.dest(folders.dist.js)
-    ], done);
+gulp.task('build:js', () => {
+    browserify(`${folders.dev.js}/okayNav.js`)
+        .transform('babelify', {
+            presets: ['es2015']
+        })
+        .bundle()
+        .pipe(source('okayNav.js'))
+        .pipe(buffer())
+        .pipe(uglify())
+        .pipe(header(creditsBanner, { package: packageInfo }))
+        .pipe(gulp.dest(folders.dist.js));
 });
 
 gulp.task('build:html', () => {
