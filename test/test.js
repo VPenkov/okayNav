@@ -1,12 +1,11 @@
 require('jsdom-global')();
+const chai = require('chai');
+const expect = chai.expect;
+const sinon = require('sinon');
+const simulant = require('simulant');
+const OkayNav = require('../app/js/okayNav');
 
-var chai = require('chai');
-var expect = chai.expect;
-var sinon = require('sinon');
-var simulant = require('simulant');
-var OkayNav = require('../app/js/okayNav');
-
-var markup = '<header id="header" class="okayNav-header">' +
+let markup = '<header id="header" class="okayNav-header">' +
         '<a class="okayNav-header__logo" href="#">Test</a>' +
         '<nav class="okayNav" id="nav-main">' +
             '<ul>' +
@@ -18,93 +17,93 @@ var markup = '<header id="header" class="okayNav-header">' +
         '</nav>' +
     '</header>';
 
-describe('okayNav', function() {
-    var okayNavInstance;
-    var windowEvents;
-    var sandbox;
+describe('okayNav', () => {
+    let okayNavInstance;
+    let windowEvents;
+    let sandbox;
 
-    beforeEach(function() {
+    beforeEach(() => {
         sandbox = sinon.sandbox.create();
         document.body.innerHTML = markup;
         windowEvents = sandbox.spy(window, 'addEventListener');
         okayNavInstance = new OkayNav('#nav-main');
     });
 
-    afterEach(function() {
+    afterEach(() => {
         sandbox.restore();
     });
 
-    describe('_cleanWhitespace', function() {
-        it('should clean the whitespace between the nodes', function() {
+    describe('_cleanWhitespace', () => {
+        it('should clean the whitespace between the nodes', () => {
             // assert
-            var whitespace = markup.match(/>\s+</g);
+            let whitespace = markup.match(/>\s+</g);
             expect(whitespace).to.equal(null);
         });
     });
 
-    describe('Array operations', function() {
+    describe('Array operations', () => {
         // arrange
-        var testArray = [1, 2, 3, 4, 10];
+        let testArray = [1, 2, 3, 4, 10];
 
-        it('should return the highest array integer', function() {
+        it('should return the highest array integer', () => {
             // act
-            var result = okayNavInstance._arrayMax(testArray);
+            let result = okayNavInstance._arrayMax(testArray);
 
             // assert
             expect(result).to.equal(10);
         });
 
-        it('should return the lowest array integer', function() {
+        it('should return the lowest array integer', () => {
             // act
-            var result = okayNavInstance._arrayMin(testArray);
+            let result = okayNavInstance._arrayMin(testArray);
 
             // assert
             expect(result).to.equal(1);
         });
     });
 
-    describe('_attachNodes', function() {
-        it('should add the correct class to the visible nav', function() {
+    describe('_attachNodes', () => {
+        it('should add the correct class to the visible nav', () => {
             // arrange
-            var navVisible = document.querySelector('#nav-main > ul');
+            let navVisible = document.querySelector('#nav-main > ul');
 
             // assert
             expect(navVisible.classList.contains('okayNav__nav--visible')).to.be.true;
         });
 
-        it('should create the invisible nav', function() {
+        it('should create the invisible nav', () => {
             // arrange
-            var navInvisible = document.querySelectorAll('.okayNav__nav--invisible');
+            let navInvisible = document.querySelectorAll('.okayNav__nav--invisible');
 
             // assert
             expect(navInvisible.length).to.equal(1);
         });
     });
 
-    describe('_createToggleButton', function() {
-        it('should create the close button', function() {
+    describe('_createToggleButton', () => {
+        it('should create the close button', () => {
             // arrange
-            var navInvisible = document.querySelectorAll('.okayNav__menu-toggle');
+            let navInvisible = document.querySelectorAll('.okayNav__menu-toggle');
 
             // assert
             expect(navInvisible.length).to.equal(1);
         });
     });
 
-    describe('_attachEvents', function() {
-        it('should listen to the load event', function() {
+    describe('_attachEvents', () => {
+        it('should listen to the load event', () => {
             // assert
             expect(windowEvents.withArgs('load')).to.be.calledOnce;
         });
 
-        it('should listen to the resize event', function() {
+        it('should listen to the resize event', () => {
             // assert
             expect(windowEvents.withArgs('resize')).to.be.calledOnce;
         });
 
-        it('should utilize the debounce script', function() {
+        it('should utilize the debounce script', () => {
             // arrange
-            var spy = sandbox.spy(okayNavInstance, '_debounce');
+            let spy = sandbox.spy(okayNavInstance, '_debounce');
 
             // act
             simulant.fire(window, 'scroll');

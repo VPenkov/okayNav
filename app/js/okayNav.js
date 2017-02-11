@@ -8,63 +8,62 @@
  *     swipe_enabled: false
  * });
  */
-;function OkayNav(target, options) {
-    // Accept a class or a DOM node as argument
-    this.navigation = (typeof target === 'object' && 'nodeType' in target) ? target : document.querySelector(target);
+class OkayNav {
+    constructor(target, options) {
+        // Accept a class or a DOM node as argument
+        this.navigation = (typeof target === 'object' && 'nodeType' in target) ? target : document.querySelector(target);
 
-    // Override the default options with the user options
-    options = options || {};
-    this.options = {
-        align_right: options.align_right || true, // If false, the menu and the kebab icon will be on the left
-        parent: options.parent || this.navigation.parentNode, // will target nav's parent by default
-        resize_delay: options.resize_delay || 10, // When resizing the window, okayNav can throttle its recalculations if enabled. Setting this to 50-250 will improve performance but make okayNav less accurate.
-        swipe_enabled: options.swipe_enabled || true, // If true, you'll be able to swipe left/right to open the navigation
-        threshold: options.threshold || 50, // Nav will auto open/close if swiped >= this many percent
-        toggle_icon_class: options.toggle_icon_class || 'okayNav__menu-toggle', // classname of the toggle button
-        toggle_icon_parent_class: options.toggle_icon_parent_class || 'okayNav__item', // classname of the <li> wrapping the toggle butotn
-        toggle_icon_content: options.toggle_icon_content || '<svg viewBox="0 0 100 100"><title>Navigation</title><g><circle cx="51" cy="17.75" r="10.75"></circle><circle cx="51" cy="50" r="10.75"></circle><circle cx="51" cy="82.25" r="10.75"></circle></g></svg>',
-        afterClose: options.afterClose || function() {}, // Will trigger after the nav gets closed
-        afterOpen: options.afterOpen || function() {}, // Will trigger after the nav gets opened
-        beforeClose: options.beforeClose || function() {}, // Will trigger before the nav gets closed
-        beforeOpen: options.beforeOpen || function() {}, // Will trigger before the nav gets opened
-        itemDisplayed: options.itemDisplayed || function() {},
-        itemHidden: options.itemHidden || function() {}
-    };
+        // Override the default options with the user options
+        options = options || {};
+        this.options = {
+            align_right: options.align_right || true, // If false, the menu and the kebab icon will be on the left
+            parent: options.parent || this.navigation.parentNode, // will target nav's parent by default
+            resize_delay: options.resize_delay || 10, // When resizing the window, okayNav can throttle its recalculations if enabled. Setting this to 50-250 will improve performance but make okayNav less accurate.
+            swipe_enabled: options.swipe_enabled || true, // If true, you'll be able to swipe left/right to open the navigation
+            threshold: options.threshold || 50, // Nav will auto open/close if swiped >= this many percent
+            toggle_icon_class: options.toggle_icon_class || 'okayNav__menu-toggle', // classname of the toggle button
+            toggle_icon_parent_class: options.toggle_icon_parent_class || 'okayNav__item', // classname of the <li> wrapping the toggle butotn
+            toggle_icon_content: options.toggle_icon_content || '<svg viewBox="0 0 100 100"><title>Navigation</title><g><circle cx="51" cy="17.75" r="10.75"></circle><circle cx="51" cy="50" r="10.75"></circle><circle cx="51" cy="82.25" r="10.75"></circle></g></svg>',
+            afterClose: options.afterClose || function() {}, // Will trigger after the nav gets closed
+            afterOpen: options.afterOpen || function() {}, // Will trigger after the nav gets opened
+            beforeClose: options.beforeClose || function() {}, // Will trigger before the nav gets closed
+            beforeOpen: options.beforeOpen || function() {}, // Will trigger before the nav gets opened
+            itemDisplayed: options.itemDisplayed || function() {},
+            itemHidden: options.itemHidden || function() {}
+        };
 
-    /**
-     * priority.visible is for the visible part of the navigation
-     * and priority.invisible is the invisible part of the navigation
-     * Lowest-priority items will become invisible first when shrinking.
-     * Highest-priority items will become visible first when expanding.
-     */
-    this.priority = {
-        visible: [],
-        invisible: []
-    };
+        /**
+         * priority.visible is for the visible part of the navigation
+         * and priority.invisible is the invisible part of the navigation
+         * Lowest-priority items will become invisible first when shrinking.
+         * Highest-priority items will become visible first when expanding.
+         */
+        this.priority = {
+            visible: [],
+            invisible: []
+        };
 
-    /**
-     * Right before hiding a nav item, okayNav will cache its width
-     * in this array in order to determine when it should be expanded
-     * if the viewport gets expanded. We cache it here because we want
-     * to know before its style gets changed when moved.
-     */
-    this.itemWidths = [];
+        /**
+         * Right before hiding a nav item, okayNav will cache its width
+         * in this array in order to determine when it should be expanded
+         * if the viewport gets expanded. We cache it here because we want
+         * to know before its style gets changed when moved.
+         */
+        this.itemWidths = [];
 
-    // Fire!
-    this._init();
-}
-
-OkayNav.prototype = {
+        // Fire!
+        this._init();
+    }
 
     /**
      * Initialization method
      */
-    _init: function() {
+    _init() {
         this._attachNodes();
         this._cleanWhitespace();
         this._initLinkProperties();
         this._attachEvents();
-    },
+    }
 
     /**
      * Allows us to enforce timeouts between method calls
@@ -75,21 +74,21 @@ OkayNav.prototype = {
      * @param {Boolean} immediate - call immediately or not
      * @see {@link http://underscorejs.org/#debounce}
      */
-    _debounce: function(fn, wait, immediate) {
-        var timeout;
-        var self = this;
+    _debounce(fn, wait, immediate) {
+        let timeout;
+        let self = this;
 
         return function() {
-            var args = arguments;
+            let args = arguments;
 
-            var later = function() {
+            let later = function() {
                 timeout = null;
                 if (!immediate) {
                     fn.apply(self, args);
                 }
             };
 
-            var callNow = immediate && !timeout;
+            let callNow = immediate && !timeout;
             clearTimeout(timeout);
             timeout = setTimeout(later, wait);
 
@@ -97,36 +96,36 @@ OkayNav.prototype = {
                 fn.apply(self, args);
             }
         };
-    },
+    }
 
     /**
      * Cleans up the whitespace between tags to ensure inline-block works correctly
      */
-    _cleanWhitespace: function() {
-        var cleanMarkup = this.navVisible.innerHTML.replace(/>\s+</g, '><');
+    _cleanWhitespace() {
+        let cleanMarkup = this.navVisible.innerHTML.replace(/>\s+</g, '><');
         this.navVisible.innerHTML = cleanMarkup;
-    },
+    }
 
     /**
      * Get the highest number from array
      * @param {Array} array - the array
      */
-    _arrayMax: function(array) {
-        return Math.max.apply(Math, array);
-    },
+    _arrayMax(array) {
+        return Math.max(...array);
+    }
 
     /**
      * Get the lowest number from array
      * @param {Array} array - the array
      */
-    _arrayMin: function(array) {
-        return Math.min.apply(Math, array);
-    },
+    _arrayMin(array) {
+        return Math.min(...array);
+    }
 
     /**
      * Create the invisible part of the navigation and set the classes
      */
-    _attachNodes: function() {
+    _attachNodes() {
         // Set the class to the visible part of the navigation
         this.navVisible = this.navigation.querySelector('ul');
         this.navVisible.classList.add('okayNav__nav--visible');
@@ -137,52 +136,52 @@ OkayNav.prototype = {
         this.navigation.appendChild(this.navInvisible);
 
         // Create the toggle button
-        var closeButton = this._createToggleButton();
+        let closeButton = this._createToggleButton();
         this.navVisible.appendChild(closeButton);
-    },
+    }
 
     /**
      * You'd never guess what this does
      * @returns {Object} - DOM node containing the toggle button
      */
-    _createToggleButton: function() {
-        var toggleButton = document.createElement('button');
+    _createToggleButton() {
+        let toggleButton = document.createElement('button');
         toggleButton.classList.add(this.options.toggle_icon_class);
         toggleButton.innerHTML = this.options.toggle_icon_content;
 
-        var toggleButtonWrapper = document.createElement('li');
+        let toggleButtonWrapper = document.createElement('li');
         toggleButtonWrapper.classList.add(this.options.toggle_icon_parent_class);
         toggleButtonWrapper.setAttribute('data-priority', 9999);
         toggleButtonWrapper.appendChild(toggleButton);
 
         return toggleButtonWrapper;
-    },
+    }
 
     /**
      * Attach window events
      */
-    _attachEvents: function() {
-        var events = ['load', 'resize'];
+    _attachEvents() {
+        let events = ['load', 'resize'];
 
-        for (var i = 0; i < events.length; i++) {
+        for (let i = 0; i < events.length; i++) {
             window.addEventListener(events[i],
                 this._debounce(this.recalcNav, this.options.resize_delay)
             );
         }
-    },
+    }
 
     /**
      * Run one big loop for all nav items during initialization.
      * Initial bulk routines run here to avoid performance hiccups.
      * Currently only used for caching link priorities.
      */
-    _initLinkProperties: function() {
-        var navItems = this.navVisible.children;
+    _initLinkProperties() {
+        let navItems = this.navVisible.children;
 
-        for (var i = 0; i < navItems.length; i++) {
+        for (let i = 0; i < navItems.length; i++) {
             this._savePriority(navItems[i], true);
         }
-    },
+    }
 
     /**
      * Adds the element's data-priority attribute value to the
@@ -191,49 +190,49 @@ OkayNav.prototype = {
      * @param {Object} element - nav item node
      * @param {Boolean} visible - save to the visible or invisible list
      */
-    _savePriority: function(element, visible) {
-        var itemPriority = element.getAttribute('data-priority') || 1;
-        var priorityList = visible ? 'visible' : 'invisible';
+    _savePriority(element, visible) {
+        let itemPriority = element.getAttribute('data-priority') || 1;
+        let priorityList = visible ? 'visible' : 'invisible';
 
         this.priority[priorityList].push(itemPriority);
-    },
+    }
 
     /**
      * Get the total width of an element's children.
      * @param {Number} - the total width of childre
      */
-    getChildrenWidth: function(element) {
-        var totalWidth = 0;
-        var children = element.children;
+    getChildrenWidth(element) {
+        let totalWidth = 0;
+        let children = element.children;
 
-        for (var i = 0; i < children.length; i++) {
+        for (let i = 0; i < children.length; i++) {
             totalWidth += children[i].offsetWidth || 0;
         }
 
         return totalWidth;
-    },
+    }
 
     /**
      * Get the width of the navVisible's parent
      * @returns {Number} - the total width
      */
-    getWrapperWidth: function() {
-        var parent = this.options.parent;
+    getWrapperWidth() {
+        let parent = this.options.parent;
 
         return parent.offsetWidth;
-    },
+    }
 
     /**
      * Get the width of the visible nav
      * @returns {Number} - the total width
      */
-    getNavWidth: function() {
+    getNavWidth() {
         return this.navVisible.offsetWidth;
-    },
+    }
 
-    getWrapperChildrenWidth: function() {
+    getWrapperChildrenWidth() {
         return this.getChildrenWidth(this.options.parent);
-    },
+    }
 
     /**
      * Calculates the available free space and returns the desired action
@@ -241,13 +240,13 @@ OkayNav.prototype = {
      *
      * @returns {String} expand|false|collapse
      */
-    _getAction: function() {
-        var action;
-        var bufferSpace = this.options.threshold; // "Safety offset"
-        var parentWidth = this.getWrapperWidth();
-        var wrapperChildrenWidth = this.getWrapperChildrenWidth();
-        var availableSpace = parentWidth - wrapperChildrenWidth - bufferSpace;
-        var expandAt = availableSpace + this.itemWidths[0];
+    _getAction() {
+        let action;
+        let bufferSpace = this.options.threshold; // "Safety offset"
+        let parentWidth = this.getWrapperWidth();
+        let wrapperChildrenWidth = this.getWrapperChildrenWidth();
+        let availableSpace = parentWidth - wrapperChildrenWidth - bufferSpace;
+        let expandAt = availableSpace + this.itemWidths[0];
 
         if (availableSpace <= 0) {
             // If available space is not enough, shrink
@@ -261,7 +260,7 @@ OkayNav.prototype = {
         }
 
         return action;
-    },
+    }
 
     /**
      * Gets the highest or lowest-priority item either from the visible
@@ -271,15 +270,15 @@ OkayNav.prototype = {
      * @param {Boolean} visible - if false, it will fetch an item from the invisible part
      * @returns {Number}
      */
-    getItemByPriority: function(important, visible) {
-        var targetNav = visible ? this.navVisible : this.navInvisible;
-        var targetArray = visible ? this.priority.visible : this.priority.invisible;
-        var priority = important ? this._arrayMax(targetArray) : this._arrayMin(targetArray);
+    getItemByPriority(important, visible) {
+        let targetNav = visible ? this.navVisible : this.navInvisible;
+        let targetArray = visible ? this.priority.visible : this.priority.invisible;
+        let priority = important ? this._arrayMax(targetArray) : this._arrayMin(targetArray);
 
-        var item = targetNav.querySelector('li[data-priority="' + priority + '"]');
+        let item = targetNav.querySelector('li[data-priority="' + priority + '"]');
 
         return item;
-    },
+    }
 
     /**
      * Move an item from the invisible to the visible part of the
@@ -288,19 +287,19 @@ OkayNav.prototype = {
      * @param {Object} element - DOM node
      * @param {Boolean} visible - if true, move to visible; else move to invisible
      */
-    _moveItemTo: function(element, visible) {
-        var targetNav = visible ? this.navVisible : this.navInvisible;
+    _moveItemTo(element, visible) {
+        let targetNav = visible ? this.navVisible : this.navInvisible;
 
         targetNav.appendChild(element);
-    },
+    }
 
     /**
      * Hide the least important item from the visible part.
      * If items have the same priority, it will hide the first DOM match.
      */
-    _collapseNavItem: function() {
+    _collapseNavItem() {
         // Get least important visible item
-        var nextToCollapse = this.getItemByPriority(false, true);
+        let nextToCollapse = this.getItemByPriority(false, true);
         console.log(nextToCollapse);
 
         // Save it to the invisible list
@@ -317,27 +316,27 @@ OkayNav.prototype = {
 
         // callback
         this.options.itemHidden.call();
-    },
+    }
 
     /**
      * Restore the most important item from the invisible part.
      * If items have the same priority, it will hide the first DOM match.
      */
-    _expandNavItem: function() {
+    _expandNavItem() {
         // Get least important invisible item
-        var nextToCollapse = this.getItemByPriority(true, false);
+        let nextToCollapse = this.getItemByPriority(true, false);
         this._moveItemTo(nextToCollapse, true);
         this.itemWidths.pop();
 
         // callback
         this.options.itemDisplayed.call();
-    },
+    }
 
     /**
      * Recursive function. It will call itself as long as an action is necessary
      */
-    recalcNav: function() {
-        var action = this._getAction();
+    recalcNav() {
+        let action = this._getAction();
 
         if (action === 'collapse') {
             this._collapseNavItem();
@@ -351,6 +350,6 @@ OkayNav.prototype = {
         // If we haven't exited yet, check again if we're good to go
         this.recalcNav();
     }
-};
+}
 
 module.exports = OkayNav;

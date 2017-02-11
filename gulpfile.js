@@ -45,7 +45,7 @@ var creditsBanner = [
     '\n'
 ].join('');
 
-gulp.task('build:css', function() {
+gulp.task('build:css', () => {
     return gulp.src(`${folders.dev.css}/**/*.scss`)
         .pipe(sourcemaps.init())
         .pipe(sass().on('error', sass.logError))
@@ -55,7 +55,7 @@ gulp.task('build:css', function() {
         .pipe(gulp.dest(folders.dist.css));
 });
 
-gulp.task('build:js', function(done) {
+gulp.task('build:js', (done) => {
     pump([
         gulp.src(`${folders.dev.js}/okayNav.js`),
         uglify({preserveComments: 'license'}),
@@ -64,12 +64,12 @@ gulp.task('build:js', function(done) {
     ], done);
 });
 
-gulp.task('build:html', function() {
+gulp.task('build:html', () => {
     return gulp.src(`${folders.dev.base}/*.html`)
         .pipe(gulp.dest(folders.dist.base));
 });
 
-gulp.task('lint:css', function() {
+gulp.task('lint:css', () => {
     return gulp
         .src(`${folders.dev.css}/**/*.scss`)
         .pipe(stylelint({
@@ -81,14 +81,14 @@ gulp.task('lint:css', function() {
         }));
 });
 
-gulp.task('lint:js', function() {
+gulp.task('lint:js', () => {
     return gulp.src(`${folders.dev.js}/**/*.js`)
         .pipe(eslint())
         .pipe(eslint.format())
         .pipe(gulp.dest(`${folders.dev.js}`));
 });
 
-gulp.task('test', function() {
+gulp.task('test', () => {
     function handleError(err) {
         console.log(err.toString());
         this.emit('end');
@@ -100,7 +100,7 @@ gulp.task('test', function() {
         .on('error', handleError);
 });
 
-gulp.task('dev', ['build:js', 'build:css', 'build:html'], function() {
+gulp.task('dev', ['build:js', 'build:css', 'build:html'], () => {
     browserSync({
         notify: false,
         port: 9000,
