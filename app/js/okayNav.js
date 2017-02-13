@@ -78,10 +78,10 @@ class OkayNav {
         let timeout;
         let self = this;
 
-        return function() {
+        return () => {
             let args = arguments;
 
-            let later = function() {
+            let later = () => {
                 timeout = null;
                 if (!immediate) {
                     fn.apply(self, args);
@@ -151,7 +151,7 @@ class OkayNav {
 
         let toggleButtonWrapper = document.createElement('li');
         toggleButtonWrapper.classList.add(this.options.toggle_icon_parent_class);
-        toggleButtonWrapper.setAttribute('data-priority', 9999);
+        toggleButtonWrapper.setAttribute('data-priority', '9999');
         toggleButtonWrapper.appendChild(toggleButton);
 
         return toggleButtonWrapper;
@@ -163,8 +163,8 @@ class OkayNav {
     _attachEvents() {
         let events = ['load', 'resize'];
 
-        for (let i = 0; i < events.length; i++) {
-            window.addEventListener(events[i],
+        for (let event of events) {
+            window.addEventListener(event,
                 this._debounce(this.recalcNav, this.options.resize_delay)
             );
         }
@@ -178,8 +178,8 @@ class OkayNav {
     _initLinkProperties() {
         let navItems = this.navVisible.children;
 
-        for (let i = 0; i < navItems.length; i++) {
-            this._savePriority(navItems[i], true);
+        for (let navItem of navItems) {
+            this._savePriority(navItem, true);
         }
     }
 
@@ -192,6 +192,7 @@ class OkayNav {
      */
     _savePriority(element, visible) {
         let itemPriority = element.getAttribute('data-priority') || 1;
+        itemPriority = parseInt(itemPriority);
         let priorityList = visible ? 'visible' : 'invisible';
 
         this.priority[priorityList].push(itemPriority);
@@ -205,8 +206,8 @@ class OkayNav {
         let totalWidth = 0;
         let children = element.children;
 
-        for (let i = 0; i < children.length; i++) {
-            totalWidth += children[i].offsetWidth || 0;
+        for (let child of children) {
+            totalWidth += child.offsetWidth || 0;
         }
 
         return totalWidth;
