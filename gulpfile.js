@@ -1,21 +1,20 @@
-var autoprefixer = require('gulp-autoprefixer');
-var browserSync = require('browser-sync');
-var eslint = require('eslint');
-var gulp = require('gulp');
-var header = require('gulp-header');
-var mocha = require('gulp-mocha');
-var sass = require('gulp-sass');
-var sourcemaps = require('gulp-sourcemaps');
-var stylelint = require('stylelint');
-var uglify = require('gulp-uglify');
-var source = require('vinyl-source-stream');
-var buffer = require('vinyl-buffer');
-var babelify = require('babelify');
-var browserify = require('browserify');
+const autoprefixer = require('gulp-autoprefixer');
+const browserSync = require('browser-sync');
+const eslint = require('eslint');
+const gulp = require('gulp');
+const header = require('gulp-header');
+const mocha = require('gulp-mocha');
+const sass = require('gulp-sass');
+const sourcemaps = require('gulp-sourcemaps');
+const stylelint = require('stylelint');
+const uglify = require('gulp-uglify');
+const source = require('vinyl-source-stream');
+const buffer = require('vinyl-buffer');
+const browserify = require('browserify');
 
-var packageInfo = require('./package.json');
+const packageInfo = require('./package.json');
 
-var autoPrefixOptions = {
+const autoPrefixOptions = {
     browsers: [
         '> 1%',
         'last 2 versions',
@@ -23,7 +22,7 @@ var autoPrefixOptions = {
     ]
 };
 
-var folders = {
+const folders = {
     test: {
         base: './test'
     },
@@ -39,7 +38,7 @@ var folders = {
     }
 };
 
-var creditsBanner = [
+const creditsBanner = [
     '/*!\n' +
     ' * okayNav <%= package.version %>\n' +
     ' * @see <%= package.homepage %>\n' +
