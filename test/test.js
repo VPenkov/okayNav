@@ -9,9 +9,9 @@ let markup = '<header id="header" class="okayNav-header">' +
         '<a class="okayNav-header__logo" href="#">Test</a>' +
         '<nav class="okayNav" id="nav-main">' +
             '<ul>' +
-                '<li data-priority="1" class="okayNav__item"><a href="#">Nav Item 1</a></li>' +
-                '<li data-priority="2" class="okayNav__item"><a href="#">Nav Item 2</a></li>' +
-                '<li data-priority="4" class="okayNav__item"><a href="#">Nav Item 3</a></li>' +
+                '<li class="okayNav__item"><a href="#">Nav Item 1</a></li>' +
+                '<li data-priority="1" class="okayNav__item"><a href="#">Nav Item 2</a></li>' +
+                '<li data-priority="2" class="okayNav__item"><a href="#">Nav Item 3</a></li>' +
                 '<li data-priority="3" class="okayNav__item"><a href="#">Nav Item 4</a></li>' +
             '</ul>' +
         '</nav>' +
@@ -88,6 +88,24 @@ describe('okayNav', () => {
             // assert
             expect(navInvisible.length).to.equal(1);
         });
+
+        it('should assign the highest priority to the toggle button\'s container', function() {
+            // arrange
+            let button = document.querySelector('.okayNav__menu-toggle');
+            let priority = button.parentNode.getAttribute('data-priority');
+
+            // assert
+            expect(priority).to.equal('9999');
+        });
+
+        it('should provide a default layout', function() {
+            // arrange
+            let kebabMenuSVG = '<svg viewBox="0 0 100 100"><title>Navigation</title><g><circle cx="51" cy="17.75" r="10.75"></circle><circle cx="51" cy="50" r="10.75"></circle><circle cx="51" cy="82.25" r="10.75"></circle></g></svg>';
+            let button = document.querySelector('.okayNav__menu-toggle');
+
+            // assert
+            expect(button.innerHTML).to.equal(kebabMenuSVG);
+        });
     });
 
     describe('_attachEvents', () => {
@@ -110,6 +128,23 @@ describe('okayNav', () => {
 
             // assert
             expect(spy).to.be.calledOnce;
+        });
+    });
+
+    describe('_initLinkProperties', () => {
+        it('should call _savePriority for each link', () => {
+            // arrange
+            let totalNavItems = document.querySelectorAll('.okayNav__item');
+            let totalVisibleItems = okayNavInstance.priority.visible.length;
+
+            // assert
+            expect(totalNavItems.length).to.equal(totalVisibleItems);
+        });
+
+        it('should assign a default priority of 1', function() {
+            let visibleItems = okayNavInstance.priority.visible;
+
+            expect(visibleItems).to.eql([1, 1, 2, 3, 9999]);
         });
     });
 });
