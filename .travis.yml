@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+    - "6.1"
+cache:
+    bundler: true
+    directories:
+    - node_modules
+
+before script:
+    - npm install
+    - gulp lint:css
+    - gulp lint:js
+    - gulp build:css
+    - gulp build:js
+    - gulp build:html
+    - gulp test
