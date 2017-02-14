@@ -147,4 +147,33 @@ describe('okayNav', () => {
             expect(visibleItems).to.eql([1, 1, 2, 3, 9999]);
         });
     });
+
+    describe('_savePriority', () => {
+        it('should be able to add items to the visible list', () => {
+            // arrange
+            okayNavInstance.priority.visible = [];
+            var testItem = document.querySelector('[data-priority]');
+            testItem.setAttribute('data-priority', '13'); // element.dataset doesn't work with jsdom
+
+            // act
+            okayNavInstance._savePriority(testItem, true);
+
+            // assert
+            expect(okayNavInstance.priority.visible).to.eql([13]);
+        });
+
+        it('should be able to add items to the invisible list', () => {
+            // arrange
+            var testItem = document.querySelector('[data-priority]');
+            testItem.setAttribute('data-priority', '15'); // element.dataset doesn't work with jsdom
+
+            // act
+            okayNavInstance._savePriority(testItem);
+
+            // assert
+            expect(okayNavInstance.priority.invisible).to.eql([15]);
+        });
+    });
+
+
 });
