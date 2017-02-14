@@ -12,7 +12,7 @@ before_install:
 script:
     - gulp lint:css
     - gulp lint:js
-    - gulp build:css
+#    - gulp build:css
     - gulp build:js
     - gulp build:html
     - gulp test
