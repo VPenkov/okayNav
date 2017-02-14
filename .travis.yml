@@ -10,9 +10,9 @@ before_install:
     - npm install
 
 script:
-    - gulp lint:css
+#    - gulp lint:css
     - gulp lint:js
-#    - gulp build:css
+    - gulp build:css
     - gulp build:js
     - gulp build:html
     - gulp test
