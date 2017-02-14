@@ -24,7 +24,7 @@
     "browser-sync": "*",
     "browserify": "^14.0.0",
     "chai": "*",
-    "eslint": "*",
+    "eslint": "^3.15.0",
     "gulp": "*",
     "gulp-autoprefixer": "*",
     "gulp-cli": "*",

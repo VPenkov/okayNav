@@ -1,6 +1,6 @@
 const autoprefixer = require('gulp-autoprefixer');
 const browserSync = require('browser-sync');
-const eslint = require('eslint');
+const eslint = require('gulp-eslint');
 const gulp = require('gulp');
 const header = require('gulp-header');
 const mocha = require('gulp-mocha');
@@ -92,7 +92,7 @@ gulp.task('lint:js', () => {
     return gulp.src(`${folders.dev.js}/**/*.js`)
         .pipe(eslint())
         .pipe(eslint.format())
-        .pipe(gulp.dest(`${folders.dev.js}`));
+        .pipe(eslint.failAfterError());
 });
 
 gulp.task('test', () => {
