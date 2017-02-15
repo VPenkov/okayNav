@@ -20,7 +20,7 @@ class OkayNav {
             parent: options.parent || this.navigation.parentNode, // will target nav's parent by default
             resize_delay: options.resize_delay || 10, // When resizing the window, okayNav can throttle its recalculations if enabled. Setting this to 50-250 will improve performance but make okayNav less accurate.
             swipe_enabled: options.swipe_enabled || true, // If true, you'll be able to swipe left/right to open the navigation
-            threshold: options.threshold || 50, // Nav will auto open/close if swiped >= this many percent
+            threshold: options.threshold || 20, // Nav will auto open/close if swiped >= this many percent
             toggle_icon_class: options.toggle_icon_class || 'okayNav__menu-toggle', // classname of the toggle button
             toggle_icon_parent_class: options.toggle_icon_parent_class || 'okayNav__item', // classname of the <li> wrapping the toggle butotn
             toggle_icon_content: options.toggle_icon_content || '<svg viewBox="0 0 100 100"><title>Navigation</title><g><circle cx="51" cy="17.75" r="10.75"></circle><circle cx="51" cy="50" r="10.75"></circle><circle cx="51" cy="82.25" r="10.75"></circle></g></svg>',
@@ -247,16 +247,15 @@ class OkayNav {
         let parentWidth = this.getWrapperWidth();
         let wrapperChildrenWidth = this.getWrapperChildrenWidth();
         let availableSpace = parentWidth - wrapperChildrenWidth - bufferSpace;
-        let expandAt = availableSpace + this.itemWidths[0];
 
         if (availableSpace <= 0) {
             // If available space is not enough, shrink
             action = 'collapse';
-        } else if (parentWidth > expandAt) {
+        } else if (availableSpace > this.itemWidths[0]) {
             // If available space is bigger than the last breakpoint we've shrinked at, expand
             action = 'expand';
         } else {
-            // Do nothing
+            // Do nothing if no collapsed items
             action = false;
         }
 
