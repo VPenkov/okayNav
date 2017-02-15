@@ -10,6 +10,7 @@ let markup = '<header id="header" class="okayNav-header">' +
         '<nav class="okayNav" id="nav-main">' +
             '<ul>' +
                 '<li class="okayNav__item"><a href="#">Nav Item 1</a></li>' +
+                '<!-- HTML comment node -->' +
                 '<li data-priority="1" class="okayNav__item"><a href="#">Nav Item 2</a></li>' +
                 '<li data-priority="2" class="okayNav__item"><a href="#">Nav Item 3</a></li>' +
                 '<li data-priority="3" class="okayNav__item"><a href="#">Nav Item 4</a></li>' +
@@ -152,7 +153,7 @@ describe('okayNav', () => {
         it('should be able to add items to the visible list', () => {
             // arrange
             okayNavInstance.priority.visible = [];
-            var testItem = document.querySelector('[data-priority]');
+            let testItem = document.querySelector('[data-priority]');
             testItem.setAttribute('data-priority', '13'); // element.dataset doesn't work with jsdom
 
             // act
@@ -164,7 +165,7 @@ describe('okayNav', () => {
 
         it('should be able to add items to the invisible list', () => {
             // arrange
-            var testItem = document.querySelector('[data-priority]');
+            let testItem = document.querySelector('[data-priority]');
             testItem.setAttribute('data-priority', '15'); // element.dataset doesn't work with jsdom
 
             // act
@@ -175,5 +176,97 @@ describe('okayNav', () => {
         });
     });
 
+    describe('getChildrenWidth', () => {
+        let stubWidths = () => {
+            let baseWidth = 10;
+            let navVisible = document.querySelector('.okayNav__nav--visible');
 
+            for (let child of navVisible.children) {
+                child.offsetWidth = baseWidth;
+                baseWidth += 10;
+            }
+        };
+
+        it('should return the total width of an element\'s children', () => {
+            // arrange
+            stubWidths();
+            let parent = document.querySelector('.okayNav__nav--visible');
+
+            // act
+            let childrenWidth = okayNavInstance.getChildrenWidth(parent);
+
+            // assert
+            expect(childrenWidth).to.equal(150);
+        });
+    });
+
+    describe('getWrapperWidth', () => {
+        it('should return the width of okayNav\'s parent', () => {
+            // arrange
+            let wrapper = document.querySelector('.okayNav-header');
+            wrapper.offsetWidth = 100;
+
+            // act
+            let result = okayNavInstance.getWrapperWidth();
+
+            // assert
+            expect(result).to.equal(100);
+        });
+    });
+
+    describe('getWrapperChildrenWidth', () => {
+        it('should get the wrapper\'s children total width', () => {
+            // arrange
+            let spy = sandbox.spy(okayNavInstance, 'getChildrenWidth');
+            let wrapper = document.querySelector('.okayNav-header');
+
+            // act
+            okayNavInstance.getWrapperChildrenWidth();
+
+            // assert
+            expect(spy.withArgs(wrapper)).to.be.calledOnce;
+        });
+    });
+
+    describe('_getAction', () => {
+        it('should return "collapse" if children\'s width is too close to the wrapper width', () => {
+            // arrange
+            sandbox.stub(okayNavInstance, 'getWrapperWidth').returns(120);
+            sandbox.stub(okayNavInstance, 'getWrapperChildrenWidth').returns(100);
+
+            // act
+            // threshold is 20
+            let result = okayNavInstance._getAction();
+
+            // assert
+            expect(result).to.equal('collapse');
+        });
+
+        it('should return "expand" if the wrapper is large enough', () => {
+            // arrange
+            sandbox.stub(okayNavInstance, 'getWrapperWidth').returns(131);
+            sandbox.stub(okayNavInstance, 'getWrapperChildrenWidth').returns(100);
+            okayNavInstance.itemWidths = [10, 20, 30];
+
+            // act
+            // threshold is 20
+            let result = okayNavInstance._getAction();
+
+            // assert
+            expect(result).to.equal('expand');
+        });
+
+        it('should return false if no collapsed items are found', () => {
+            // arrange
+            sandbox.stub(okayNavInstance, 'getWrapperWidth').returns(1000);
+            sandbox.stub(okayNavInstance, 'getWrapperChildrenWidth').returns(100);
+
+            // act
+            // threshold is 20
+            let result = okayNavInstance._getAction();
+
+            // assert
+            expect(result).be.false;
+        });
+    });
 });
