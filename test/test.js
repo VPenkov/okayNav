@@ -90,18 +90,9 @@ describe('okayNav', () => {
             expect(navInvisible.length).to.equal(1);
         });
 
-        it('should assign the highest priority to the toggle button\'s container', function() {
-            // arrange
-            let button = document.querySelector('.okayNav__menu-toggle');
-            let priority = button.parentNode.getAttribute('data-priority');
-
-            // assert
-            expect(priority).to.equal('9999');
-        });
-
         it('should provide a default layout', function() {
             // arrange
-            let kebabMenuSVG = '<svg viewBox="0 0 100 100"><title>Navigation</title><g><circle cx="51" cy="17.75" r="10.75"></circle><circle cx="51" cy="50" r="10.75"></circle><circle cx="51" cy="82.25" r="10.75"></circle></g></svg>';
+            let kebabMenuSVG = '<svg viewBox="0 0 100 100"><g><circle cx="51" cy="17.75" r="10.75"></circle><circle cx="51" cy="50" r="10.75"></circle><circle cx="51" cy="82.25" r="10.75"></circle></g></svg>';
             let button = document.querySelector('.okayNav__menu-toggle');
 
             // assert
@@ -136,7 +127,7 @@ describe('okayNav', () => {
         it('should call _savePriority for each link', () => {
             // arrange
             let totalNavItems = document.querySelectorAll('.okayNav__item');
-            let totalVisibleItems = okayNavInstance.priority.visible.length;
+            let totalVisibleItems = okayNavInstance.priority.visible.length + 1; // toggle button is not included
 
             // assert
             expect(totalNavItems.length).to.equal(totalVisibleItems);
@@ -145,7 +136,7 @@ describe('okayNav', () => {
         it('should assign a default priority of 1', function() {
             let visibleItems = okayNavInstance.priority.visible;
 
-            expect(visibleItems).to.eql([1, 1, 2, 3, 9999]);
+            expect(visibleItems).to.eql([1, 1, 2, 3]);
         });
     });
 
@@ -267,6 +258,65 @@ describe('okayNav', () => {
 
             // assert
             expect(result).be.false;
+        });
+    });
+
+    describe('getItemByPriority', () => {
+        it('should be able to return a high-priority visible item', () => {
+            // arrange
+            // highest-priority test content has a priority of 3
+            let expectedElement = okayNavInstance.navVisible.querySelector('[data-priority="3"]');
+
+            // act
+            let result = okayNavInstance.getItemByPriority(true, true);
+
+            // result
+            expect(result.outerHTML).to.eql(expectedElement.outerHTML);
+        });
+
+        it('should be able to return a low-priority visible item', () => {
+            // arrange
+            let expectedElement = okayNavInstance.navVisible.querySelector('[data-priority="1"]');
+
+            // act
+            let result = okayNavInstance.getItemByPriority(false, true);
+
+            // result
+            expect(result).to.eql(expectedElement);
+        });
+
+        it('should be able to return a high-priority invisible item', () => {
+            // arrange
+            let element1 = okayNavInstance.navVisible.querySelector('[data-priority="3"]');
+            let element2 = okayNavInstance.navVisible.querySelector('[data-priority="2"]');
+            okayNavInstance._moveItemTo(element1, false);
+            okayNavInstance._moveItemTo(element2, false);
+            okayNavInstance.priority.visible.pop();
+            okayNavInstance.priority.visible.pop();
+            okayNavInstance.priority.invisible.push(2, 3);
+
+            // act
+            let result = okayNavInstance.getItemByPriority(true, false);
+
+            // result
+            expect(result).to.eql(element1);
+        });
+
+        it('should be able to return a low-priority invisible item', () => {
+            // arrange
+            let element1 = okayNavInstance.navVisible.querySelector('[data-priority="3"]');
+            let element2 = okayNavInstance.navVisible.querySelector('[data-priority="2"]');
+            okayNavInstance._moveItemTo(element1, false);
+            okayNavInstance._moveItemTo(element2, false);
+            okayNavInstance.priority.visible.pop();
+            okayNavInstance.priority.visible.pop();
+            okayNavInstance.priority.invisible.push(2, 3);
+
+            // act
+            let result = okayNavInstance.getItemByPriority(false, false);
+
+            // result
+            expect(result).to.eql(element2);
         });
     });
 });

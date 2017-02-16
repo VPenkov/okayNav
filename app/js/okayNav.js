@@ -23,7 +23,7 @@ class OkayNav {
             threshold: options.threshold || 20, // Nav will auto open/close if swiped >= this many percent
             toggle_icon_class: options.toggle_icon_class || 'okayNav__menu-toggle', // classname of the toggle button
             toggle_icon_parent_class: options.toggle_icon_parent_class || 'okayNav__item', // classname of the <li> wrapping the toggle butotn
-            toggle_icon_content: options.toggle_icon_content || '<svg viewBox="0 0 100 100"><title>Navigation</title><g><circle cx="51" cy="17.75" r="10.75"></circle><circle cx="51" cy="50" r="10.75"></circle><circle cx="51" cy="82.25" r="10.75"></circle></g></svg>',
+            toggle_icon_content: options.toggle_icon_content || '<svg viewBox="0 0 100 100"><g><circle cx="51" cy="17.75" r="10.75"></circle><circle cx="51" cy="50" r="10.75"></circle><circle cx="51" cy="82.25" r="10.75"></circle></g></svg>',
             afterClose: options.afterClose || function() {}, // Will trigger after the nav gets closed
             afterOpen: options.afterOpen || function() {}, // Will trigger after the nav gets opened
             beforeClose: options.beforeClose || function() {}, // Will trigger before the nav gets closed
@@ -151,7 +151,6 @@ class OkayNav {
 
         let toggleButtonWrapper = document.createElement('li');
         toggleButtonWrapper.classList.add(this.options.toggle_icon_parent_class);
-        toggleButtonWrapper.setAttribute('data-priority', '9999');
         toggleButtonWrapper.appendChild(toggleButton);
 
         return toggleButtonWrapper;
@@ -181,6 +180,8 @@ class OkayNav {
         for (let navItem of navItems) {
             this._savePriority(navItem, true);
         }
+
+        this.priority.visible.pop();
     }
 
     /**
@@ -300,7 +301,6 @@ class OkayNav {
     _collapseNavItem() {
         // Get least important visible item
         let nextToCollapse = this.getItemByPriority(false, true);
-        console.log(nextToCollapse);
 
         // Save it to the invisible list
         this._savePriority(nextToCollapse, false);
