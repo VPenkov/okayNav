@@ -11,9 +11,9 @@ let markup = '<header id="header" class="okayNav-header">' +
             '<ul>' +
                 '<li class="okayNav__item"><a href="#">Nav Item 1</a></li>' +
                 '<!-- HTML comment node -->' +
-                '<li data-priority="1" class="okayNav__item"><a href="#">Nav Item 2</a></li>' +
-                '<li data-priority="2" class="okayNav__item"><a href="#">Nav Item 3</a></li>' +
-                '<li data-priority="3" class="okayNav__item"><a href="#">Nav Item 4</a></li>' +
+                '<li data-okaynav-priority="1" class="okayNav__item"><a href="#">Nav Item 2</a></li>' +
+                '<li data-okaynav-priority="2" class="okayNav__item"><a href="#">Nav Item 3</a></li>' +
+                '<li data-okaynav-priority="3" class="okayNav__item"><a href="#">Nav Item 4</a></li>' +
             '</ul>' +
         '</nav>' +
     '</header>';
@@ -144,8 +144,8 @@ describe('okayNav', () => {
         it('should be able to add items to the visible list', () => {
             // arrange
             okayNavInstance.priority.visible = [];
-            let testItem = document.querySelector('[data-priority]');
-            testItem.setAttribute('data-priority', '13'); // element.dataset doesn't work with jsdom
+            let testItem = document.querySelector('[data-okaynav-priority]');
+            testItem.setAttribute('data-okaynav-priority', '13'); // element.dataset doesn't work with jsdom
 
             // act
             okayNavInstance._savePriority(testItem, true);
@@ -156,8 +156,8 @@ describe('okayNav', () => {
 
         it('should be able to add items to the invisible list', () => {
             // arrange
-            let testItem = document.querySelector('[data-priority]');
-            testItem.setAttribute('data-priority', '15'); // element.dataset doesn't work with jsdom
+            let testItem = document.querySelector('[data-okaynav-priority]');
+            testItem.setAttribute('data-okaynav-priority', '15'); // element.dataset doesn't work with jsdom
 
             // act
             okayNavInstance._savePriority(testItem);
@@ -265,7 +265,7 @@ describe('okayNav', () => {
         it('should be able to return a high-priority visible item', () => {
             // arrange
             // highest-priority test content has a priority of 3
-            let expectedElement = okayNavInstance.navVisible.querySelector('[data-priority="3"]');
+            let expectedElement = okayNavInstance.navVisible.querySelector('[data-okaynav-priority="3"]');
 
             // act
             let result = okayNavInstance.getItemByPriority(true, true);
@@ -276,7 +276,7 @@ describe('okayNav', () => {
 
         it('should be able to return a low-priority visible item', () => {
             // arrange
-            let expectedElement = okayNavInstance.navVisible.querySelector('[data-priority="1"]');
+            let expectedElement = okayNavInstance.navVisible.querySelector('[data-okaynav-priority="1"]');
 
             // act
             let result = okayNavInstance.getItemByPriority(false, true);
@@ -287,8 +287,8 @@ describe('okayNav', () => {
 
         it('should be able to return a high-priority invisible item', () => {
             // arrange
-            let element1 = okayNavInstance.navVisible.querySelector('[data-priority="3"]');
-            let element2 = okayNavInstance.navVisible.querySelector('[data-priority="2"]');
+            let element1 = okayNavInstance.navVisible.querySelector('[data-okaynav-priority="3"]');
+            let element2 = okayNavInstance.navVisible.querySelector('[data-okaynav-priority="2"]');
             okayNavInstance._moveItemTo(element1, false);
             okayNavInstance._moveItemTo(element2, false);
             okayNavInstance.priority.visible.pop();
@@ -304,8 +304,8 @@ describe('okayNav', () => {
 
         it('should be able to return a low-priority invisible item', () => {
             // arrange
-            let element1 = okayNavInstance.navVisible.querySelector('[data-priority="3"]');
-            let element2 = okayNavInstance.navVisible.querySelector('[data-priority="2"]');
+            let element1 = okayNavInstance.navVisible.querySelector('[data-okaynav-priority="3"]');
+            let element2 = okayNavInstance.navVisible.querySelector('[data-okaynav-priority="2"]');
             okayNavInstance._moveItemTo(element1, false);
             okayNavInstance._moveItemTo(element2, false);
             okayNavInstance.priority.visible.pop();
@@ -317,6 +317,58 @@ describe('okayNav', () => {
 
             // result
             expect(result).to.eql(element2);
+        });
+    });
+
+    describe('_moveItemTo', () => {
+        let selector = '[data-okaynav-priority="2"]';
+
+        it('should be able to move an item to the invisible part of the navigation', () => {
+            // arrange
+            let testElement = okayNavInstance.navVisible.querySelector(selector);
+
+            // act
+            okayNavInstance._moveItemTo(testElement);
+
+            // assert
+            expect(okayNavInstance.navInvisible.innerHTML).to.equal(testElement.outerHTML);
+        });
+
+        it('should be able to move an item to the visible part of the navigation', () => {
+            // arrange
+            let testElement = okayNavInstance.navVisible.querySelector(selector);
+            okayNavInstance._moveItemTo(testElement); // move once
+
+            // act
+            okayNavInstance._moveItemTo(testElement, true); // move back
+
+            // assert
+            expect(okayNavInstance.navVisible.innerHTML).to.contain(testElement.outerHTML);
+        });
+
+        it('should remove a moved item from the visible part of the navigation', () => {
+            // arrange
+            let testElement = okayNavInstance.navVisible.querySelector(selector);
+
+            // act
+            okayNavInstance._moveItemTo(testElement);
+
+            // assert
+            let matchingElements = okayNavInstance.navVisible.querySelectorAll(selector);
+            expect(matchingElements).to.be.empty;
+        });
+
+        it('should remove a moved item from the invisible part of the navigation', () => {
+            // arrange
+            let testElement = okayNavInstance.navVisible.querySelector(selector);
+            okayNavInstance._moveItemTo(testElement); // move once
+
+            // act
+            okayNavInstance._moveItemTo(testElement, true); // move back
+            let matchingElements = okayNavInstance.navInvisible.querySelectorAll(selector);
+
+            // assert
+            expect(matchingElements).to.be.empty;
         });
     });
 });

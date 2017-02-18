@@ -177,8 +177,9 @@ class OkayNav {
     _initLinkProperties() {
         let navItems = this.navVisible.children;
 
-        for (let navItem of navItems) {
-            this._savePriority(navItem, true);
+        for (let i = 0; i < navItems.length; i++) {
+            this._savePriority(navItems[i], true);
+            this._savePosition(navItems[i], i);
         }
 
         this.priority.visible.pop();
@@ -192,11 +193,15 @@ class OkayNav {
      * @param {Boolean} visible - save to the visible or invisible list
      */
     _savePriority(element, visible) {
-        let itemPriority = element.getAttribute('data-priority') || 1;
+        let itemPriority = element.getAttribute('data-okaynav-priority') || 1;
         itemPriority = parseInt(itemPriority);
         let priorityList = visible ? 'visible' : 'invisible';
 
         this.priority[priorityList].push(itemPriority);
+    }
+
+    _savePosition(element, position) {
+        element.setAttribute('data-okaynav-position', position);
     }
 
     /**
@@ -276,7 +281,7 @@ class OkayNav {
         let targetArray = visible ? this.priority.visible : this.priority.invisible;
         let priority = important ? this._arrayMax(targetArray) : this._arrayMin(targetArray);
 
-        let item = targetNav.querySelector('li[data-priority="' + priority + '"]');
+        let item = targetNav.querySelector('li[data-okaynav-priority="' + priority + '"]');
 
         return item;
     }
@@ -285,13 +290,17 @@ class OkayNav {
      * Move an item from the invisible to the visible part of the
      * navigation or vice versa.
      *
+     * @TODO: when moving to the visible part, move before the toggle button
+     *
      * @param {Object} element - DOM node
      * @param {Boolean} visible - if true, move to visible; else move to invisible
      */
     _moveItemTo(element, visible) {
-        let targetNav = visible ? this.navVisible : this.navInvisible;
-
-        targetNav.appendChild(element);
+        if (visible) {
+            this.navVisible.insertBefore(element, this.toggleButtonWrapper);
+        } else {
+            this.navInvisible.appendChild(element);
+        }
     }
 
     /**
