@@ -371,4 +371,66 @@ describe('okayNav', () => {
             expect(matchingElements).to.be.empty;
         });
     });
+
+    describe('_collapseNavItem', () => {
+        it('should target the lowest-priority item', () => {
+            var spy = sandbox.spy(okayNavInstance, 'getItemByPriority');
+
+            // act
+            okayNavInstance._collapseNavItem();
+
+            // assert
+            expect(spy.withArgs(false, true)).to.be.calledOnce;
+        });
+
+        it('should move the lowest-priority nav item to the invisible part', () => {
+            // arrange
+            var expectedElement = document.querySelector('[data-okaynav-priority="1"]');
+
+            // act
+            okayNavInstance._collapseNavItem();
+
+            // assert
+            expect(expectedElement.parentNode).to.eql(okayNavInstance.navInvisible);
+        });
+
+        it('should remove the collapsed item from the visible array', () => {
+            // act
+            okayNavInstance._collapseNavItem();
+
+            // assert
+            expect(okayNavInstance.priority.visible).to.eql([1, 2, 3]);
+        });
+
+        it('should add the collapsed item to the invisible array', () => {
+            // act
+            okayNavInstance._collapseNavItem();
+
+            // assert
+            expect(okayNavInstance.priority.invisible).to.eql([1]);
+        });
+
+        it('should cache the collapsed item\'s original width', () => {
+            // arrange
+            var expectedElement = document.querySelector('[data-okaynav-priority="1"]');
+            expectedElement.scrollWidth = 100;
+
+            // act
+            okayNavInstance._collapseNavItem();
+
+            // assert
+            expect(okayNavInstance.itemWidths).to.eql([100]);
+        });
+
+        it('should execute the callback', () => {
+            // arrange
+            var spy = sandbox.spy(okayNavInstance.options, 'itemHidden');
+
+            // act
+            okayNavInstance._collapseNavItem();
+
+            // assert
+            expect(spy).to.be.calledOnce;
+        });
+    });
 });
