@@ -362,6 +362,10 @@
 
         recalcNav: function() {
             var self = this;
+            
+            // recalculate the default width
+            self.default_width = self.getChildrenWidth(self.navigation);
+            
             var wrapper_width = $(self.options.parent).outerWidth(true),
                 space_taken = self.getChildrenWidth(self.options.parent),
                 nav_full_width = self.navigation.outerWidth(true),
